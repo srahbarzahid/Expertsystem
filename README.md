@@ -94,7 +94,7 @@ flowchart LR
 1. Clone the project:
 
    ```
-   git clone https://github.com/akshay-rajan/expertsystem.git
+   git clone https://github.com/srahbarzahid/Expertsystem.git
    ```
 
 2. Navigate to the project directory:
@@ -139,7 +139,5 @@ flowchart LR
    ```bash
    python manage.py runserver
    ```
-
-The application will be accessible at at http://127.0.0.1:8000/ .
 
 ---
