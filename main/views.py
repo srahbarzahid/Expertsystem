@@ -1101,8 +1101,7 @@ def fill_missing_values(request):
                     elif missing_value_strategy == 'most_frequent':
                         imputer = SimpleImputer(missing_values=None, strategy='most_frequent')
                     else:
-                        raise ValueError(f"Unsupported missing_value_strategy '{
-                                         missing_value_strategy}' for column '{col}'")
+                        raise ValueError(f"Unsupported missing_value_strategy '{missing_value_strategy}' for column '{col}'")
 
                     # Apply the imputer to the column
                     data[[col]] = imputer.fit_transform(data[[col]])
