@@ -126,6 +126,7 @@ def linear_regression(request):
         equation = construct_line(intercept, coefficients, X, target)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -174,6 +175,7 @@ def lasso(request):
         metrics = regression_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -227,6 +229,7 @@ def ridge(request):
         metrics = regression_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -281,6 +284,7 @@ def decision_tree_regression(request):
         metrics = regression_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -331,6 +335,7 @@ def random_forest_regression(request):
         metrics = regression_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -379,6 +384,7 @@ def knn(request):
         metrics = classification_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -432,6 +438,7 @@ def logistic_regression(request):
         metrics = classification_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -480,6 +487,7 @@ def naive_bayes(request):
         metrics = classification_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -531,6 +539,7 @@ def decision_tree(request):
         metrics = classification_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -584,6 +593,7 @@ def random_forest(request):
         metrics = classification_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -637,6 +647,7 @@ def svm(request):
         metrics = classification_evaluation(y_test, y_pred)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -690,6 +701,7 @@ def kmeans(request):
         X_data = df[features].values
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -760,6 +772,7 @@ def hierarchical_clustering(request):
         cluster_plot = plot_clusters(X_data, labels, centroids, features, 0, 1)
 
         ml_model = MLModel()
+        ml_model.created_by = request.user
         ml_model.save_model(model)
         request.session['model'] = str(ml_model.model_id)
 
@@ -877,6 +890,7 @@ def save_file(request):
 
             # Store the file as JSON in the db
             file_model = DataFile()
+            file_model.uploaded_by = request.user
             file_model.save_file(file.name, df)
             request.session['file'] = str(file_model.file_id)
             request.session['filename'] = file.name
@@ -898,6 +912,7 @@ def save_file(request):
 
             # Store the dataset as JSON in the db
             file_model = DataFile()
+            file_model.uploaded_by = request.user
             file_model.save_file(dataset_name, df)
             request.session['file'] = str(file_model.file_id)
             request.session['filename'] = dataset_name
@@ -1029,6 +1044,7 @@ def preprocessing(request):
 
                 # Store the dataset and process
                 file_model = DataFile()
+                file_model.uploaded_by = request.user
                 file_model.save_file(uploaded_file.name, data)
                 request.session['file'] = str(file_model.file_id)
                 request.session['filename'] = uploaded_file.name
@@ -1051,6 +1067,7 @@ def preprocessing(request):
                     data = pd.read_excel(dataset_path)
 
                 file_model = DataFile()
+                file_model.uploaded_by = request.user
                 file_model.save_file(preloaded_dataset, data)
                 request.session['file'] = str(file_model.file_id)
                 request.session['filename'] = preloaded_dataset

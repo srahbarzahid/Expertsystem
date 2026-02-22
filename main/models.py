@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from django.db import models
+from django.contrib.auth.models import User
 
 # Stores all the trained models
 class MLModel(models.Model):
@@ -12,6 +13,8 @@ class MLModel(models.Model):
     model_data = models.BinaryField()
     # Timestamp
     created_at = models.DateTimeField(auto_now_add=True)
+    # User who created the model
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_models')
     
     def __str__(self):
         return str(self.model_id)
@@ -35,6 +38,8 @@ class DataFile(models.Model):
     file_data = models.JSONField()
     # Timestamp
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    # User who uploaded the file
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='uploaded_files')
     
     def __str__(self):
         return self.filename
