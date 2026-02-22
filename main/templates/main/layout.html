@@ -1,0 +1,301 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-JWKZEYNH72"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-JWKZEYNH72");
+    </script>
+
+    <title>{% block title %}Expert System{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'main/css/prism.css' %}" />
+    <link rel="stylesheet" href="{% static 'main/css/toastify.css' %}" />
+    <link rel="stylesheet" href="{% static 'main/css/sweetalert2.min.css' %}" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.css"
+      rel="stylesheet"
+    />
+    {% block style %}{% endblock %}
+
+    <link rel="icon" href="{% static 'main/img/favicon_es.png' %}" />
+  </head>
+
+  <body>
+    <div class="loader">
+      <div class="logo">
+        <img
+          src="{% static 'main/img/loader.png' %}"
+          alt="Loading..."
+          class="d-inline-block align-top"
+        />
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+      {% if user.is_authenticated %}
+      <a class="navbar-brand me-auto" href="{% url 'index' %}">
+      {% else %}
+      <a class="navbar-brand me-auto" href="{% url 'home' %}">
+      {% endif %}
+        <h1 class="display-4">
+          <img
+            src="{% static 'main/img/es_logo_transparent.png' %}"
+            alt="EXPERT SYSTEM"
+            class="d-inline-block align-top"
+          />
+        </h1>
+      </a>
+      <button
+        class="navbar-toggler me-2"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'learn' %}">Learn</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'preprocessing' %}"
+              >Preprocessing</a
+            >
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href=""
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Algorithms
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'classification' %}"
+                >Classification</a
+              >
+              <a class="dropdown-item" href="{% url 'regression' %}"
+                >Regression</a
+              >
+              <a class="dropdown-item" href="{% url 'clustering' %}"
+                >Clustering</a
+              >
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'samples' %}">Sample Datasets</a>
+          </li>
+          <li class="nav-item">
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="nav-link btn btn-link"
+                style="text-decoration: none"
+              >
+                Logout
+              </button>
+            </form>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'about' %}">About</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container" style="min-height: 80vh">
+      {% block body %} {% endblock %}
+    </div>
+
+    <div class="footer mt-2">
+      <div class="container">
+        <p class="line"></p>
+        <footer class="py-5">
+          {% block footer %}
+          <div class="row">
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Classification</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                  <a href="{% url 'knn' %}" class="nav-link p-0 text-muted"
+                    >KNN</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'naive_bayes' %}"
+                    class="nav-link p-0 text-muted"
+                    >Naive Bayes</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'logistic_regression' %}"
+                    class="nav-link p-0 text-muted"
+                    >Logistic Regression</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a href="{% url 'svm' %}" class="nav-link p-0 text-muted"
+                    >SVM</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'decision_tree' %}"
+                    class="nav-link p-0 text-muted"
+                    >Decision Tree</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'random_forest' %}"
+                    class="nav-link p-0 text-muted"
+                    >Random Forest</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Regression</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'linear_regression' %}"
+                    class="nav-link p-0 text-muted"
+                    >Linear Regression</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a href="{% url 'lasso' %}" class="nav-link p-0 text-muted"
+                    >Lasso Regression</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a href="{% url 'ridge' %}" class="nav-link p-0 text-muted"
+                    >Ridge Regression</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'decision_tree_regression' %}"
+                    class="nav-link p-0 text-muted"
+                    >Decision Tree</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'random_forest_regression' %}"
+                    class="nav-link p-0 text-muted"
+                    >Random Forest</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Clustering</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                  <a href="{% url 'kmeans' %}" class="nav-link p-0 text-muted"
+                    >K Means</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a
+                    href="{% url 'hierarchical_clustering' %}"
+                    class="nav-link p-0 text-muted"
+                    >Hierarchical</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Preprocessing</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                  <a href="{% url 'preprocessing' %}" class="nav-link p-0 text-muted"
+                    >Encoding</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a href="{% url 'preprocessing' %}" class="nav-link p-0 text-muted"
+                    >Missing Values</a
+                  >
+                </li>
+                <li class="nav-item mb-2">
+                  <a href="{% url 'preprocessing' %}" class="nav-link p-0 text-muted"
+                    >Scaling</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {% endblock %}
+        </footer>
+      </div>
+    </div>
+
+    <script src="{% static 'main/js/jquery-3.4.1.min.js' %}"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="{% static 'main/js/main.js' %}"></script>
+    <script src="{% static 'main/js/custom.js' %}"></script>
+    <script src="{% static 'main/js/prism.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+    <script src="{% static 'main/js/gauge.min.js' %}"></script>
+    <script src="{% static 'main/js/toastify.js' %}"></script>
+    <script>
+      $(document).ready(function () {
+        $(".fade-in").fadeIn(500);
+      });
+    </script>
+    {% block script %}{% endblock %}
+  </body>
+</html>

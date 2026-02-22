@@ -1,0 +1,159 @@
+{% extends 'main/layout.html' %} {% load static %} {% block title %}Welcome to
+Expert System{% endblock %} {% block style %}
+<style>
+  .landing-title {
+    color: rgb(0, 150, 255);
+    font-weight: 800;
+    font-size: 4.5rem;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .landing-subtitle {
+    font-weight: 300;
+    color: #888;
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+  }
+  .landing-hr {
+    border-top: 1px solid #ccc;
+    width: 80%;
+    margin: 0 auto;
+  }
+  .landing-prompt {
+    font-size: 1.2rem;
+    color: #444;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  .btn-landing {
+    border-radius: 50px;
+    padding: 12px 40px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+    border: none;
+  }
+  .btn-landing:hover {
+    transform: translateY(-2px);
+  }
+  .btn-login {
+    background-color: rgb(0, 10, 102);
+    color: white;
+  }
+  .btn-login:hover {
+    color: white;
+    background-color: rgb(0, 5, 50);
+  }
+  .btn-signup {
+    background-color: rgb(0, 150, 255);
+    color: white;
+  }
+  .btn-signup:hover {
+    color: white;
+    background-color: rgb(0, 130, 220);
+  }
+  .feature-card {
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+    transition: box-shadow 0.3s;
+  }
+  .feature-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+  .feature-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+    filter: grayscale(100%) brightness(0%);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .feature-title {
+    color: rgb(0, 150, 255);
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .feature-text {
+    color: #888;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+</style>
+{% endblock %} {% block body %}
+<div class="text-center mt-5 fade-in mb-5">
+  <h1 class="landing-title">Welcome to Expert System</h1>
+  <p class="landing-subtitle">
+    The easiest way to build, train, and test Machine Learning models without
+    writing a single line of code.
+  </p>
+
+  <div class="landing-hr"></div>
+
+  <p class="landing-prompt">
+    Sign up or Login to start your Machine Learning journey today!
+  </p>
+
+  <div class="d-flex justify-content-center gap-4">
+    <a class="btn btn-landing btn-login shadow-sm" href="{% url 'login' %}"
+      >Login</a
+    >
+    <a class="btn btn-landing btn-signup shadow-sm" href="{% url 'signup' %}"
+      >Sign Up</a
+    >
+  </div>
+
+  <div class="row mt-5 pt-5 fade-in-2">
+    <div class="col-md-4 mb-4">
+      <div class="card feature-card h-100">
+        <div class="card-body p-4 text-center">
+          <img
+            src="{% static 'main/img/classification.png' %}"
+            class="feature-icon"
+            alt=""
+          />
+          <div class="feature-title">Preprocessing</div>
+          <p class="feature-text">
+            Clean, transform and prepare your data to make it suitable for
+            modelling.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card feature-card h-100">
+        <div class="card-body p-4 text-center">
+          <img
+            src="{% static 'main/img/brain.png' %}"
+            class="feature-icon"
+            alt=""
+          />
+          <div class="feature-title">Modeling</div>
+          <p class="feature-text">
+            Choose the best algorithm for your task and teach it to recognize
+            patterns.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card feature-card h-100">
+        <div class="card-body p-4 text-center">
+          <img
+            src="{% static 'main/img/regression.png' %}"
+            class="feature-icon"
+            alt=""
+          />
+          <div class="feature-title">Evaluate</div>
+          <p class="feature-text">
+            Assess the performance of the trained model using various metrics.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}{{ type }}{% endblock %}
+
+{% block body %}
+<div class="fade-in p-2 page">
+  <h1 class="display-3 m-2 title">{{ type }}</h1>
+
+  <div class="algo-container">
+    <div class="algorithms list-group m-4" style="flex: 1;">
+      {% for algorithm in algorithms %}
+      <a href="{% url algorithm.url %}" class="list-group-item list-group-item-action m-1 algo {{ algorithm.url }}-algo">
+        {{ algorithm.name }}
+      </a>
+      {% endfor %}
+    </div>
+    <div class="info m-4" style="flex: 1;">
+      <p class="m-2 algo-description"></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+  let description = document.querySelector('.algo-description');
+  description.innerText = `{{ type }}` == 'Classification' ? 
+  `Classification is a type of supervised learning where the target variable is categorical. The goal is to predict the class or category of the target variable based on the input features. 
+  For example, classifying emails as spam or not spam, predicting whether a customer will buy a product or not, or identifying the species of a flower based on its features.
+  ` : (`{{ type }}` == 'Regression' ? 
+  `Regression is a type of supervised learning where the target variable is continuous. The goal is to predict a continuous value based on the input features.
+    For example, predicting house prices, estimating the temperature, or forecasting the sales of a product.`
+    : 
+  `Clustering is used to group similar data points together based on their features. The goal is to partition the data into groups such that data points in the same group are more similar to each other than to those in other groups. 
+  For example, clustering customers based on their purchase history, grouping documents based on their content, or segmenting images based on their colors.
+  `
+    );
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('algo') === 'start' && localStorage.getItem('tour') == 'true' && '{{ type }}' == 'Classification') {
+      localStorage.setItem('algo', 'true'); // Mark as visited
+      introJs().setOptions({
+        steps: [
+          {
+            intro: "Classification involves predicting the class or category of something based on its features. Let's start with KNN!",
+          },
+          {
+            element: document.querySelector('.knn-algo'),
+            intro: "K-Nearest Neighbors (KNN) is one of the simplest classification algorithms. It classifies a data point based on the majority class of its k nearest neighbors. For example, you have some fruits and vegetables. If a given item is red, and you have more red fruits than red vegetables, you would classify it as a fruit.",
+          },
+          {
+            element: document.querySelector('.knn-algo'),
+            intro: "Let's build a KNN model!",
+          },
+        ],
+      }).start();
+      // Start tour on the KNN algorithm, if the user is navigating to it
+      document.querySelector('.knn-algo').addEventListener('click', function() {
+        localStorage.setItem('knn', 'start');
+      });
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "main/layout.html" %}
+{% load static %}
+
+{% block title %}Results{% endblock %}
+
+{% block body %}
+<div class="fade-in">
+  <div class="d-flex justify-content-between">
+    <h1 class="display-3 title">Results</h1>
+    <div class="code-div d-flex align-items-center">
+      <button class="view-code-btn text-center" id="show-code-btn">
+        <img src="{% static 'main/img/code.svg' %}" class="view-code-logo" alt="View Code">
+      </button>
+    </div>
+  </div>
+  
+  <div id="results">
+    <div class="d-flex justify-content-center">
+      <h2 class="display-5 p-3 font-weight-bold">
+        Number of Clusters = {{ k }}
+      </h2>
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <div class="centroids p-2 flex-grow-1">
+      <h2 class="header m-2 p-2">Centroids</h2>
+      <ol class="list-group">
+        {% for centroid in centroids %}
+          <li class="list-group-item list-group-item-action">
+            {{ centroid }}
+          </li>
+        {% endfor %}
+      </ol>
+
+      <h3 class="m-2 mt-4">Evaluation Metrics</h3>
+      <table class="table mt-3 table-bordered table-hover">
+        <tbody>
+          <tr>
+            <th>Silhouette Score</th>
+            <td class="
+              {% if metrics.silhouette_score > 0.6 %}
+                table-success
+              {% elif metrics.silhouette_score > 0.2 %}
+                table-warning
+              {% else %}
+                table-danger
+              {% endif %}
+            ">
+              {{ metrics.silhouette_score }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+  </div>
+  
+  
+  <div class="evaluation mt-2">
+    <div class="d-flex justify-content-end mt-4 mb-4">
+      <a href="{% url 'download_model' %}" class="link">
+        <button class="btn btn-primary btn-block">
+          Download Trained Model
+        </button>
+      </a>
+    </div>
+    
+    <div class="visual">
+      <div id="dendrogram-plot" class="img-fluid dt-plot" style="max-width: 90vw;"></div>
+    </div>
+    <div class="visual">
+      <div id="plotly-plot" class="img-fluid dt-plot" style="max-width: 90vw;"></div>
+      
+      <div class="axis-selection mt-4">
+        <div class="cluster-buttons">
+          <div class="m-2">
+            <label for="x-axis-select" class="form-label d-inline">X-Axis:</label>
+            <select id="x-axis-select" class="form-control d-inline">
+              {% for feature in features %}
+              <option value="{{ forloop.counter0 }}" {% if forloop.counter0 == 0 %}selected{% endif %}>{{ feature }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="m-2">
+            <label for="y-axis-select d-inline" class="form-label d-inline">Y-Axis:</label>
+            <select id="y-axis-select" class="form-control d-inline">
+              {% for feature in features %}
+              <option value="{{ forloop.counter0 }}" {% if forloop.counter0 == 1 %}selected{% endif %}>{{ feature }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="m-2 d-flex align-items-end">
+            <button id="generate-plot-btn" class="btn-primary bubbly-button">Plot</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table class="table table-bordered table-info">
+        <thead class="thead">
+          <tr class="thead">
+            <th>Point</th>
+            {% for val in X %}
+              {% for i in val %}
+                <td>{{ i }}</td>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Label</th>
+            {% for label in labels %}
+              <td colspan="{{ feature_count }}" class="text-center">{{ label }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="source-code d-none"><pre><code class="language-python">
+    # Import necessary libraries
+    import pandas as pd
+    from sklearn.cluster import AgglomerativeClustering
+    from sklearn.preprocessing import StandardScaler
+    import matplotlib.pyplot as plt
+    
+    # Load dataset from CSV file
+    data = pd.read_csv("data.csv")  # Replace 'data.csv' with the path to your CSV file
+    
+    # Inspect the dataset
+    print(data.head())
+    
+    # Feature selection
+    X = data[['feature1', 'feature2', 'feature3']]  # Example features
+    
+    # Normalize the data (important for Hierarchical Clustering)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # Initialize the Hierarchical Clustering model
+    model = AgglomerativeClustering(n_clusters=3)  # n_clusters is the number of desired clusters
+    
+    # Fit the model
+    labels = model.fit_predict(X_scaled)
+    
+    # Plot the clusters
+    plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=labels, cmap='viridis')
+    plt.title("Hierarchical Clustering")
+    plt.show()
+  </code></pre></div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+  var graph_data = {{ dendrogram | safe }};
+  Plotly.newPlot('dendrogram-plot', graph_data);
+
+  var cluster_data = {{ cluster_plot | safe }};
+  Plotly.newPlot('plotly-plot', cluster_data);
+</script>
+<script src="{% static 'main/js/clustering.js' %}"></script>
+{% endblock %}

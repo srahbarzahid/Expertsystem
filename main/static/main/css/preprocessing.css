@@ -1,0 +1,271 @@
+:root {
+  --primary-color: #ffffff;
+  --secondary-color: rgb(0, 150, 255); 
+  --dark-color: rgb(0, 10, 102);
+}
+
+.title {
+  color: rgb(0, 150, 255)!important;
+}
+.guide-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+}
+
+.custom-popup {
+    font-size: 16px; /* Increase font size */
+    text-align: left; /* Align text to the left */
+  }
+.custom-popup .swal2-html-container {
+  font-size: 16px; /* Optional: to ensure the HTML content font size is consistent */
+}
+
+.info-button {
+  position: absolute;  /* Position it absolutely within the parent */
+  top: 10px;           /* Adjust to move the button from the top */
+  right: 10px;         /* Adjust to move the button from the right */
+  background-color: white;
+  color: #0056b3;      /* Text color */
+  border: 1px solid #0056b3; /* Border color */
+  border-radius: 5px;   /* Optional: makes the button round */
+  padding: 10px;        /* Adjust the padding */
+  font-size: 18px;      /* Adjust font size */
+  cursor: pointer;     /* Pointer cursor for the button */
+}
+.info-button:hover {
+  background-color: #0056b3; /* Darker background color on hover */
+  color: white;             /* White text color on hover */
+}
+.info-button:focus {
+  outline: none; /* Remove the outline on focus */
+}
+.swal2-close {
+  outline: none!important;
+}
+
+.table-info-container {
+  position: relative;
+  display: inline-block;
+  text-align: left!important;
+}
+
+.data-info-box {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+input#file {
+  border: 0.01px solid rgba(0, 150, 255, 0.2);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  height: 40px;
+}
+
+.preprocessing-dataset-selection {
+  margin-top: 15px;
+  min-width: 450px;
+}
+.preprocessing-dataset-selection div {
+  display: inline-block;
+  padding: 10px;
+  opacity: 0.6;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+.preprocessing-dataset-selection div.selected {
+  opacity: 1;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.next-btn {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  height: 5vh;
+  width: 40px;
+  background: transparent;
+  border: none;
+  text-align: center; /* Center text horizontally */
+  display: flex; /* Enable flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  margin-right: 40px;
+  z-index: 100;
+  cursor: pointer;
+}
+.next-btn:before,
+.next-btn:after {
+  position: absolute;
+  pointer-events: none;
+  transform: scale(0.75, 1.5);
+  transition: 125ms ease-in-out;
+  font-size: 1.5em; /* Adjust font size for visibility */
+  line-height: 1; /* Prevent vertical spacing issues */
+}
+.next-btn:before {
+  content: '>';
+  font-size: xx-large;
+  color: var(--secondary-color);
+  opacity: 1;
+}
+.next-btn:after {
+  content: 'Modelling';
+  color: var(--secondary-color);
+  font-size: large;
+  opacity: 0;
+  transform: translateX(-30%);
+}
+.next-btn:hover:before {
+  opacity: 0;
+  transform: translateX(30%);
+  transition: 250ms ease-in-out;
+}
+.next-btn:hover:after {
+  opacity: 1;
+  transform: translateX(0);
+  transition: 250ms ease-in-out;
+}
+
+#category-display {
+  position: fixed;
+  min-width: 80vw;
+  height: auto;
+  min-height: 65vh;
+  background-color: var(--primary-color);
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 150, 255, 0.4);
+  padding: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#category-display .subtitle {
+  width: 60%;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+#category-display a {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  padding: 4px 0px;
+  margin-top: 25px;
+  border: none;
+  border-radius: 55px;
+  text-decoration: none;
+  text-align: left;
+  margin-left: 0;
+  color: var(--secondary-color);
+  transition: all 0.5s;
+}
+#category-display a:hover {
+  border: none;
+  text-decoration: underline;
+  text-decoration-color: var(--dark-color)!important;
+  margin-left: 5px;
+  color: var(--dark-color)!important;
+}
+#category-display .last {
+  transition: all 0.5s;
+}
+#category-display .last:hover {
+  border: none;
+  text-decoration: underline;
+  text-decoration-color: var(--dark-color)!important;
+  margin-left: 5px;
+  color: var(--dark-color)!important;
+}
+#category-display a:focus, a:active {
+  color: var(--dark-color)!important;
+  outline: none;
+}
+#category-display .card-text {
+  min-height: 100px;
+  font-size: 16px;
+}
+
+#category-display .close-btn {
+  /* Align top right */
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  margin-right: 5px;
+  background-color: transparent;
+  color: var(--secondary-color);
+  font-size: 30px!important;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+
+  &:hover {
+    color: var(--dark-color);
+    margin-right: 7px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .preprocessing-dataset-selection {
+    min-width: 100%;
+  }
+  #category-display {
+    width: 90vw;
+    height: auto;
+    min-height: 80vh;
+    z-index: 1021;
+    font-size: 16px;
+  }
+  #category-display .subtitle {
+    width: 80%;
+  }
+  #category-display a {
+    font-size: 16px;
+  }
+  #category-display .card {
+    height: auto;
+  }
+  #category-display .card-text {
+    font-size: 14px;
+    min-height: auto !important;
+  } 
+  #category-display .close-btn {
+    font-size: 30px;
+  }
+  .next-btn {
+    margin-right: 20px;
+  }
+  #category-display .category-card {
+    box-shadow: none;
+    background-color: white !important;
+    border: none;
+  }
+  #category-display .category-card .last {
+    width: 100%;
+    border: none;
+    text-decoration: none;
+    text-align: center;
+    text-decoration-color: var(--dark-color)!important;
+    color: var(--dark-color)!important;
+    margin-top: 20px !important;
+  }
+}

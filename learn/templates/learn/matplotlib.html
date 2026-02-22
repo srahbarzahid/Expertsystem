@@ -1,0 +1,208 @@
+{% extends "learn/layout.html" %}
+{% load static %}
+
+{% block title %}Data Visualization{% endblock %}
+
+{% block body %}
+<div>
+  <h1 class="chapter-title">Data Visualization with Matplotlib</h1>
+  <div class="chapter-content">
+    <p>
+      <span>Matplotlib</span> is a foundational plotting library in Python that provides comprehensive tools for creating static, animated, and interactive visualizations. It is highly customizable and integrates seamlessly with NumPy for numerical data manipulation. The core functionality of Matplotlib lies in its <code>pyplot</code> module, typically imported as <code>plt</code>.
+    </p>
+
+    <h2 class="chapter-subheading">Basic Plotting</h2>
+    <div class="mt-4">
+      <span class="dark">Plotting Lines:</span> Create simple line plots with customizations.
+      <div class="code-block">
+        <pre><code class="language-python">import matplotlib.pyplot as plt
+
+# Data
+x = [1, 2, 3, 4, 5]
+y = [1, 4, 9, 16, 25]
+
+# Line plot with customization
+plt.plot(x, y, color='g', linestyle='--', linewidth=3, marker='x', markersize=15, label='My Line')
+
+# Title and labels
+plt.title("Plotting Lines")
+plt.xlabel("X Axis")
+plt.ylabel("Y Axis")
+
+# Add legend
+plt.legend()
+plt.show()</code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/plot_lines.png' %}" alt="Line Plot" style="width:400px;">
+        <span class="caption">Line Plot</span>
+      </div>
+    </div>
+
+    <h2 class="chapter-subheading">Trigonometric Functions</h2>
+    <div class="mt-4">
+      <span class="dark">Sine and Cosine Waves:</span> Plot trigonometric functions.
+      <div class="code-block">
+        <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate data
+x = np.linspace(-np.pi, np.pi, 100)
+y1 = np.sin(x)
+y2 = np.cos(x)
+
+# Plot
+plt.plot(x, y1, label='Sine', color='blue')
+plt.plot(x, y2, label='Cosine', color='green')
+
+plt.title("Sine and Cosine")
+plt.legend()
+plt.show()</code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/sine_cosine.png' %}" alt="Sine and Cosine Waves" style="width:400px;">
+        <span class="caption">Sine and Cosine Waves</span>
+      </div>
+    </div>
+
+    <h2 class="chapter-subheading">Subplots</h2>
+    <div class="mt-4">
+      <span class="dark">Multiple Plots in a Single Figure:</span> Create subplots to visualize multiple datasets.
+      <div class="code-block">
+        <pre><code class="language-python">plt.figure()
+
+# First subplot
+plt.subplot(2, 1, 1)
+plt.plot(x, y1)
+plt.title("Sine Wave")
+
+# Second subplot
+plt.subplot(2, 1, 2)
+plt.plot(x, y2)
+plt.title("Cosine Wave")
+
+plt.tight_layout()
+plt.show()</code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/subplots.png' %}" alt="Subplots" style="width:400px;">
+        <span class="caption">Subplots</span>
+      </div>
+    </div>
+
+    <h2 class="chapter-subheading">Other Visualizations</h2>
+    <div class="mt-4">
+      <span class="dark">Bar Charts:</span> Represent data with rectangular bars.
+      <div class="code-block">
+        <pre><code class="language-python">x = np.arange(1, 6)
+y = np.random.randint(1, 50, 5)
+
+plt.bar(x, y, color='purple')
+plt.title("Bar Chart")
+plt.xlabel("X Axis")
+plt.ylabel("Values")
+plt.show()</code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/bar_chart.png' %}" alt="Bar Chart" style="width:400px;">
+        <span class="caption">Bar Chart</span>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <span class="dark">Pie Charts:</span> Visualize proportions in a dataset.
+      <div class="code-block">
+        <pre><code class="language-python">x = [4, 4, 2]
+colors = ['red', 'blue', 'orange']
+labels = ['A', 'B', 'C']
+
+plt.pie(x, colors=colors, labels=labels, explode=(0, 0, 0.1), startangle=90)
+plt.title("Pie Chart")
+plt.show()</code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/pie_chart.png' %}" alt="Pie Chart" style="width:400px;">
+        <span class="caption">Pie Chart</span>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <span class="dark">Scatter Plots:</span> Plot points to identify relationships between two variables.
+      <div class="code-block">
+        <pre><code class="language-python">x = np.random.normal(0, 1, 100)
+y = np.random.normal(1, 10, 100)
+
+plt.scatter(x, y, color='green', marker='o')
+plt.title("Scatter Plot")
+plt.xlabel("X Axis")
+plt.ylabel("Y Axis")
+plt.show()</code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/scatter_plot.png' %}" alt="Scatter Plot" style="width:400px;">
+        <span class="caption">Scatter Plot</span>
+      </div>
+    </div>
+    <h2 class="chapter-subheading">Advanced</h2>
+    <div class="mt-4">
+      <span class="dark">Support Vector Machine (SVM):</span> Visualize the decision boundary and support vectors.
+      <div class="code-block">
+        <pre><code class="language-python"><pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Select First 2 features as X and Y
+X_vis = X[:, :2] 
+
+# Find min and max of both columns
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+
+# Construct a meshgrid - a list of coordinates
+h = 0.01 # Step
+x_coordinates, y_coordinates = np.arange(x_min, x_max, h), np.arange(y_min, y_max, h)
+xx, yy = np.meshgrid(x_coordinates, y_coordinates)
+
+# Decision boundary
+x_1d, y_1d = xx.ravel(), yy.ravel() # Convert 2D to 1D
+values_1d = np.c_[x_1d, y_1d] # Concatenate
+Z = model.decision_function(values_1d)
+Z = Z.reshape(xx.shape)
+
+plt.scatter(X_vis[:, 0], X_vis[:, 1], c=y, cmap='viridis', alpha=0.7)
+plt.contourf(xx, yy, Z, levels=[-1, 0, 1], colors='c', alpha=0.5)
+plt.contour(xx, yy, Z, levels=[-1, 0, 1], colors='r', alpha=0.5, linestyles=['--', '-', '--'])
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.title('SVM Decision Boundary')
+plt.show()</code></pre></code></pre>
+      </div>
+      <div class="img-div">
+        <img src="{% static 'learn/img/svm_decision_boundary.png' %}" alt="SVM Decision Boundary" style="width:500px;">
+        <span class="caption">SVM Decision Boundary Visualization</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="content-links d-flex justify-content-between">
+    <a href="{% url 'chapter' 'pandas' %}" class="content-link">
+      <button class="btn btn-dark">
+        Previous
+      </button>
+    </a>
+    <a href="{% url 'chapter' 'knn' %}" class="content-link">
+      <button class="btn btn-primary">
+        Next
+      </button>
+    </a>
+  </div>
+  <div class="other-links">
+    <div class="hline"></div>
+    <ul>
+        <li><a href="{% url 'chapter' 'numpy' %}">NumPy Basics</a></li>
+      <li><a href="{% url 'chapter' 'pandas' %}">Pandas Basics</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

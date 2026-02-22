@@ -1,0 +1,372 @@
+{% extends 'main/layout.html' %} {% load static %} {% block title %}Expert
+System{% endblock %} {% block style %}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.css"
+  rel="stylesheet"
+/>
+{% endblock %} {% block body %}
+<div class="first d-flex flex-wrap justify-content-center" id="home">
+  <div class="text-left m-3">
+    <h1 class="text-white fade-in" id="main-title">Learn. Build. Evaluate.</h1>
+    <span class="d-flex justify-content-center text-white">
+      <div class="fade-in-2">
+        Build an entire Machine Learning Pipeline in a few clicks.
+      </div>
+    </span>
+    <div class="fade-in-3">
+      <div class="d-flex">
+        <a href="#learnml" class="start-btn">Get Started!</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="div-2"></div>
+
+<div class="div-3 fade-in-2" id="thumbnail">
+  <img
+    src="{% static 'main/img/thumbnail.png' %}"
+    alt=""
+    class="thumbnail-img"
+    draggable="false"
+  />
+  <img
+    src="{% static 'main/img/thumbnail2.png' %}"
+    alt=""
+    class="mobile-thumbnail-img"
+    draggable="false"
+  />
+</div>
+
+<div class="div-4 m-2 mb-4 p-2">
+  <div class="d-flex justify-content-center">
+    <h2 class="mt-4 mb-4 heading-2">Machine Learning for Everyone</h2>
+  </div>
+  <div class="d-flex justify-content-center">
+    <p class="text-center">
+      Expert System simplifies machine learning by guiding you through every
+      step of the machine learning process, from data processing and model
+      building to evaluation and prediction, without writing any code.
+    </p>
+  </div>
+</div>
+
+<div class="div-5 mt-4 mb-4 p-4 bg-light text-left">
+  <div class="d-flex justify-content-center flex-wrap m-4">
+    <div class="m-3 d-flex justify-content-center" style="width: 20rem">
+      <div class="card-body">
+        <h4 class="card-title">Process Data</h4>
+        <p class="card-text">
+          Clean, transform and prepare your data to make it suitable for
+          modelling.
+        </p>
+      </div>
+    </div>
+
+    <div class="m-3 fade-in-card" style="width: 20rem">
+      <div class="card-body">
+        <h4 class="card-title">Build Model</h4>
+        <p class="card-text">
+          Choose the best algorithm for your task and teach it to recognize
+          patterns in your data.
+        </p>
+      </div>
+    </div>
+
+    <div class="m-3 fade-in-card" style="width: 20rem">
+      <div class="card-body">
+        <h4 class="card-title">Evaluate & Predict</h4>
+        <p class="card-text">
+          Assess the performance of the trained model using various metrics.
+          Apply the model to make predictions.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="learn-ml" id="learnml">
+  <div
+    class="learn-card mt-0 mb-0 fade-in-card d-flex flex-row justify-content-between w-100 h-100"
+  >
+    <div
+      class="card-body mt-0 d-flex flex-column justify-content-start align-items-stretch text-left p-4"
+    >
+      <h5 class="card-title">Introduction</h5>
+      <p class="card-text">New to Machine Learning? Start here.</p>
+      <a href="{% url 'learn' %}" class="mt-auto">
+        <button>Start Learning →</button>
+      </a>
+    </div>
+    <div
+      class="p-4 d-flex justify-content-center align-items-center card-right"
+    >
+      <div class="learn-grid-container">
+        <div>Pandas</div>
+        <div>NumPy</div>
+        <div>Matplotlib</div>
+        <div>Classification</div>
+        <div>Encoding</div>
+        <div>SVM</div>
+        <div>Regression</div>
+        <div>Missing Values</div>
+        <div>Decision Tree</div>
+        <div>Clustering</div>
+        <div>Scaling</div>
+        <div>Random Forest</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="second p-4 pb-0 mb-0" id="get-started">
+  <div
+    class="preprocessing-card m-3 fade-in-card d-flex flex-row justify-content-between w-100"
+  >
+    <div
+      class="card-body mt-auto d-flex flex-column justify-content-end text-left p-4"
+    >
+      <h5 class="card-title">Manage Data</h5>
+      <p class="card-text">
+        Prepare your data for analysis with cleaning and pre-processing.
+      </p>
+      <a href="{% url 'preprocessing' %}">
+        <button>Preprocessing →</button>
+      </a>
+    </div>
+    <div
+      class="p-4 d-flex justify-content-center align-items-center card-right"
+    >
+      <img
+        src="{% static 'main/img/preprocessing.png' %}"
+        class="feature-card-img"
+        alt="Learn"
+      />
+    </div>
+  </div>
+
+  <div
+    class="modelling-card m-3 fade-in-card d-flex flex-row justify-content-between w-100"
+  >
+    <div
+      class="card-body mt-auto d-flex flex-column justify-content-end text-left p-4"
+    >
+      <h5 class="card-title">Modelling</h5>
+      <p class="card-text">Pick an algorithm and start building ML Models.</p>
+      <a href="#select-category">
+        <button>Start Building →</button>
+      </a>
+    </div>
+    <div
+      class="p-4 d-flex justify-content-center align-items-center card-right"
+    >
+      <img
+        src="{% static 'main/img/brain.png' %}"
+        class="feature-card-img"
+        alt="Learn"
+      />
+    </div>
+  </div>
+</div>
+
+<div
+  class="third d-flex flex-column justify-content-center"
+  id="select-category"
+>
+  <div class="m-2 mt-4 mb-4 p-2">
+    <div class="d-flex justify-content-center">
+      <h2 class="mb-4 heading-2">Select a Category</h2>
+    </div>
+    <div class="d-flex justify-content-center">
+      <p class="text-center subtitle">
+        Pick the category of algorithms that best describes your problem.
+      </p>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center align-items-center mb-4">
+    <div class="category-cards">
+      <div class="d-flex justify-content-center flex-wrap">
+        <div class="card m-2 bg-light category-card" style="width: 18rem">
+          <div class="card-body d-flex flex-column align-items-start">
+            <div class="start">
+              <div class="d-flex">
+                <img
+                  src="{% static 'main/img/classification.png' %}"
+                  alt=""
+                  class="category-logo me-2"
+                />
+                <div>
+                  <h5 class="card-title">Classification</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    Supervised Learning
+                  </h6>
+                </div>
+              </div>
+              <p class="line"></p>
+            </div>
+            <div class="mid">
+              <p class="card-text">
+                Classify data points into predefined categories.
+              </p>
+            </div>
+            <div class="last mt-auto">
+              <a
+                href="{% url 'classification' %}"
+                class=""
+                id="classification-link"
+                >Go →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="card m-2 bg-light category-card" style="width: 18rem">
+          <div class="card-body d-flex flex-column align-items-start">
+            <div class="start">
+              <div class="d-flex">
+                <img
+                  src="{% static 'main/img/regression.png' %}"
+                  alt=""
+                  class="category-logo me-2"
+                />
+                <div>
+                  <h5 class="card-title">Regression</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    Supervised Learning
+                  </h6>
+                </div>
+              </div>
+              <p class="line"></p>
+            </div>
+            <div class="mid">
+              <p class="card-text">Predict a continuous numerical value.</p>
+            </div>
+            <div class="last mt-auto">
+              <a href="{% url 'regression' %}" class=""> Go → </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card m-2 bg-light category-card" style="width: 18rem">
+          <div class="card-body d-flex flex-column align-items-start">
+            <div class="start">
+              <div class="d-flex">
+                <img
+                  src="{% static 'main/img/clustering.png' %}"
+                  alt=""
+                  class="category-logo me-2"
+                />
+                <div>
+                  <h5 class="card-title">Clustering</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    Unsupervised Learning
+                  </h6>
+                </div>
+              </div>
+              <p class="line"></p>
+            </div>
+            <div class="mid">
+              <p class="card-text">
+                Identify natural groupings within your data based on
+                similarities.
+              </p>
+            </div>
+            <div class="last mt-auto">
+              <a href="{% url 'clustering' %}" class="">Go →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  function homeTour() {
+    localStorage.setItem("tour", "true"); // Indicate that the user has started the tour
+    localStorage.setItem("visited", "true"); // Prevents the notification from showing again
+    introJs()
+      .setOptions({
+        steps: [
+          {
+            element: document.querySelector(".learn-card"),
+            intro:
+              "Here, you can learn about Machine Learning concepts, with notes and code snippets in Python.",
+          },
+          {
+            element: document.querySelector(".preprocessing-card"),
+            intro:
+              "The first step in building a machine learning model is to preprocess the data. This involves cleaning, transforming, and preparing the data for analysis. Let's skip this step for now.",
+          },
+          {
+            element: document.querySelector(".modelling-card"),
+            intro:
+              "After preprocessing the data, you can start building machine learning models. This involves selecting an algorithm and training it on your data.",
+          },
+          {
+            element: document.querySelector(".category-cards"),
+            intro:
+              "These are the categories of algorithms available on the platform. Choose the category that best describes your problem.",
+          },
+          {
+            element: document.querySelector(".category-card"),
+            intro:
+              "Let's get started by building a Classification model. Click on 'Go' to proceed.",
+          },
+        ],
+      })
+      .start();
+  }
+  // Show a notification asking the user to start the tour of the platform
+  document.addEventListener("DOMContentLoaded", function () {
+    // Check if the user has denied the tour before by closing the notification
+    if (localStorage.getItem("visited") === "true") {
+      return;
+    }
+    // Start the notification after 1 second
+    setTimeout(function () {
+      showNotification({
+        title: "Welcome to Expert System!",
+        message: "Get started by learning how the platform works.",
+        confirmText: "Start Tour",
+        onConfirm: homeTour,
+        onDismiss: () => localStorage.setItem("visited", "true"),
+      });
+    }, 1000);
+
+    // Initialize Classification Tour if the user is navigating to it
+    document
+      .querySelector("#classification-link")
+      .addEventListener("click", function () {
+        if (
+          localStorage.getItem("algo") !== "true" &&
+          localStorage.getItem("tour") == "true"
+        ) {
+          localStorage.setItem("algo", "start");
+        }
+      });
+  });
+
+  $(document).ready(function () {
+    $(".fade-in").fadeIn(500);
+    $(".fade-in-2").fadeIn(1000);
+    $(".fade-in-3").fadeIn(1300);
+  });
+
+  $(document).ready(function () {
+    $('a[href^="#"]').on("click", function (event) {
+      var target = $(this.getAttribute("href"));
+      if (target.length) {
+        event.preventDefault();
+        $("html, body").stop().animate(
+          {
+            scrollTop: target.offset().top,
+          },
+          1000,
+        );
+      }
+    });
+  });
+</script>
+{% endblock %}
