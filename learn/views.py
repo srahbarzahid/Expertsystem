@@ -7,20 +7,20 @@ from django.contrib.auth.decorators import login_required
 
 TEMPLATES = {
     'introduction': 'learn/introduction.html',
-    'pandas': 'learn/pandas.html',
+    'steps': 'learn/steps.html',
+    'preprocessing': 'learn/preprocessing.html',
     'numpy': 'learn/numpy.html',
-    'matplotlib': 'learn/matplotlib.html',
-    'classification': 'learn/classification.html',
-    'encoding': 'learn/encoding.html',
+    'pandas': 'learn/pandas.html',
+    'visualization': 'learn/matplotlib.html',
+    'knn': 'learn/knn.html',
+    'classification_metrics': 'learn/classification_metrics.html',
+    'decision_tree': 'learn/decision_tree.html',
+    'naive_bayes': 'learn/naive_bayes.html',
+    'linear_regression': 'learn/linear_regression.html',
+    'regression_metrics': 'learn/regression_metrics.html',
+    'kmeans': 'learn/kmeans.html',
     'svm': 'learn/svm.html',
-    'regression': 'learn/regression.html',
-    'missing-values': 'learn/missing_values.html',
-    'decision-tree': 'learn/decision_tree.html',
-    'clustering': 'learn/clustering.html',
-    'scaling': 'learn/scaling.html',
-    'random-forest': 'learn/random_forest.html',
 }
-
 
 @login_required
 def index(request):
