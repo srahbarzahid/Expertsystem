@@ -22,30 +22,30 @@
 
     <title>{% block title %}Expert System{% endblock %}</title>
 
-    <link rel="stylesheet" href="{% static 'main/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="{% static 'main/css/prism.css' %}" />
-    <link rel="stylesheet" href="{% static 'main/css/toastify.css' %}" />
-    <link rel="stylesheet" href="{% static 'main/css/sweetalert2.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/prism.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toastify.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/sweetalert2.min.css' %}" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.css"
       rel="stylesheet"
     />
     {% block style %}{% endblock %}
 
-    <link rel="icon" href="{% static 'main/img/favicon_es.png' %}" />
+    <link rel="icon" href="{% static 'img/favicon_es.png' %}" />
   </head>
 
   <body>
     <div class="loader">
       <div class="logo">
         <img
-          src="{% static 'main/img/loader.png' %}"
+          src="{% static 'img/loader.png' %}"
           alt="Loading..."
           class="d-inline-block align-top"
         />
@@ -61,7 +61,7 @@
       {% endif %}
         <h1 class="display-4">
           <img
-            src="{% static 'main/img/es_logo_transparent.png' %}"
+            src="{% static 'img/es_logo_transparent.png' %}"
             alt="EXPERT SYSTEM"
             class="d-inline-block align-top"
           />
@@ -278,19 +278,19 @@
       </div>
     </div>
 
-    <script src="{% static 'main/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
-    <script src="{% static 'main/js/main.js' %}"></script>
-    <script src="{% static 'main/js/custom.js' %}"></script>
-    <script src="{% static 'main/js/prism.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/prism.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
-    <script src="{% static 'main/js/gauge.min.js' %}"></script>
-    <script src="{% static 'main/js/toastify.js' %}"></script>
+    <script src="{% static 'js/gauge.min.js' %}"></script>
+    <script src="{% static 'js/toastify.js' %}"></script>
     <script>
       $(document).ready(function () {
         $(".fade-in").fadeIn(500);

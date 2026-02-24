@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from .models import DataFile
+from django.contrib.auth.models import User
 import pandas as pd
 import json
 import uuid
@@ -10,6 +11,8 @@ class MainViewsTestCase(TestCase):
     def setUp(self):
         # Set up a test client
         self.client = Client()        
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
         # Create a sample DataFile object
         self.file_id = uuid.uuid4()
         self.data = pd.DataFrame({
@@ -49,7 +52,7 @@ class MainViewsTestCase(TestCase):
         self.assertTemplateUsed(response, 'main/algorithms.html')
 
     def test_preprocessing_view(self):
-        with open('main/static/main/files/purchases.csv', 'rb') as file:
+        with open('static/files/purchases.csv', 'rb') as file:
             response = self.client.post(reverse('preprocessing'), {'file': file})           
         self.assertEqual(response.status_code, 200)
         self.assertIn('json_data', response.json())

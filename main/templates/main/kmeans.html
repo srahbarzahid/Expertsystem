@@ -9,7 +9,7 @@
     <h1 class="display-3 title">Results</h1>
     <div class="code-div d-flex align-items-center">
       <button class="view-code-btn text-center" id="show-code-btn">
-        <img src="{% static 'main/img/code.svg' %}" class="view-code-logo" alt="View Code">
+        <img src="{% static 'img/code.svg' %}" class="view-code-logo" alt="View Code">
       </button>
     </div>
   </div>
@@ -192,5 +192,5 @@
   var graph_data = {{ plot | safe }};
   Plotly.newPlot('plotly-plot', graph_data);
 </script>
-<script src={% static "main/js/clustering.js" %}></script>
+<script src={% static "js/clustering.js" %}></script>
 {% endblock %}
