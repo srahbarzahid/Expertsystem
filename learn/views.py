@@ -20,6 +20,7 @@ TEMPLATES = {
     'random_forest': 'learn/random_forest.html',
     'regression_metrics': 'learn/regression_metrics.html',
     'kmeans': 'learn/kmeans.html',
+    'hierarchical_clustering': 'learn/hierarchical_clustering.html',
     'svm': 'learn/svm.html',
 }
 

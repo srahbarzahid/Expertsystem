@@ -1,0 +1,243 @@
+{% extends "learn/layout.html" %} {% load static %} {% block title%}Hierarchical
+Clustering{% endblock %} {% block body %}
+<div>
+  <h1 class="chapter-title">Hierarchical Clustering</h1>
+  <div class="chapter-content">
+    <p>
+      <span class="dark">Hierarchical clustering</span> is an
+      <span class="red">unsupervised learning</span> technique used to group
+      similar data points into clusters by building a hierarchy (tree-like
+      structure) of clusters. Unlike K-Means, it does not require choosing the
+      number of clusters beforehand. The hierarchy is typically visualized using
+      a <span class="dark">dendrogram</span>.
+    </p>
+
+    <h2 class="chapter-subheading">Types of Hierarchical Clustering</h2>
+    <ul>
+      <li>
+        <span class="dark">Agglomerative (Bottom-Up):</span>
+        Starts with each point as its own cluster and repeatedly merges the
+        closest clusters until one cluster remains.
+      </li>
+      <li>
+        <span class="dark">Divisive (Top-Down):</span>
+        Starts with all points in one cluster and repeatedly splits the cluster
+        into smaller clusters.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Key Concepts</h2>
+    <ul>
+      <li>
+        <span class="dark">Distance Metric:</span> How we measure similarity
+        (e.g., Euclidean, Manhattan, Cosine).
+      </li>
+      <li>
+        <span class="dark">Linkage Criteria:</span> How we measure distance
+        between clusters:
+        <ul>
+          <li>
+            <span class="dark">Single linkage:</span> Minimum distance between
+            points in two clusters.
+          </li>
+          <li>
+            <span class="dark">Complete linkage:</span> Maximum distance between
+            points in two clusters.
+          </li>
+          <li>
+            <span class="dark">Average linkage:</span> Average distance between
+            points in two clusters.
+          </li>
+          <li>
+            <span class="dark">Ward linkage:</span> Minimizes variance within
+            clusters (very common and effective).
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Mathematical Formulation</h2>
+    <p>For two points \(a\) and \(b\), Euclidean distance is:</p>
+    $$ d(a,b) = \sqrt{\sum_{j=1}^{n}(a_j - b_j)^2} $$
+    <p>
+      In hierarchical clustering, we repeatedly merge/split clusters based on a
+      chosen linkage rule.
+    </p>
+
+    <h2 class="chapter-subheading">Dendrogram Explanation</h2>
+    <p>
+      A <span class="dark">dendrogram</span> shows how clusters are merged
+      step-by-step. The height at which two branches merge indicates the
+      <span class="dark">distance</span> between those clusters. By drawing a
+      horizontal cut line, you can decide the number of clusters.
+    </p>
+
+    <h2 class="chapter-subheading">Code</h2>
+    <div class="code-block">
+      <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+from sklearn.cluster import AgglomerativeClustering
+
+# 1) Generate synthetic data
+X, _ = make_blobs(n_samples=250, centers=4, cluster_std=1.1, random_state=42)
+
+# 2) Scale features (important for distance-based clustering)
+X_scaled = StandardScaler().fit_transform(X)
+
+# 3) Create linkage matrix for dendrogram (Ward method)
+Z = linkage(X_scaled, method='ward')
+
+# 4) Plot dendrogram
+plt.figure(figsize=(8, 4))
+dendrogram(Z)
+plt.title("Dendrogram (Hierarchical Clustering)")
+plt.xlabel("Data points")
+plt.ylabel("Distance")
+plt.tight_layout()
+plt.show()
+
+# 5) Choose number of clusters using a cut (example: k=4)
+k = 4
+labels = fcluster(Z, t=k, criterion='maxclust')
+
+# 6) Plot clustered points
+plt.figure(figsize=(6, 5))
+plt.scatter(X[:, 0], X[:, 1], c=labels, edgecolors="k", s=35)
+plt.title(f"Hierarchical Clustering (k={k})")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.tight_layout()
+
+# Save image for website usage
+plt.savefig("hierarchical_clustering.png", dpi=300)
+plt.show()
+
+# Optional: AgglomerativeClustering directly (sklearn)
+model = AgglomerativeClustering(n_clusters=4, linkage='ward')
+pred = model.fit_predict(X_scaled)</code></pre>
+    </div>
+
+    <div class="img-div">
+      <img
+        src="{% static 'learn/img/hierarchical_clustering.png' %}"
+        alt="Hierarchical Clustering"
+        style="width: 400px"
+      />
+      <span class="caption"
+        >Hierarchical Clustering (Dendrogram + Clustered Points)</span
+      >
+    </div>
+
+    <h2 class="chapter-subheading">Choosing the Number of Clusters</h2>
+    <ul>
+      <li>
+        <span class="dark">Dendrogram Cut:</span> Draw a horizontal line; the
+        number of vertical lines it cuts equals the number of clusters.
+      </li>
+      <li>
+        <span class="dark">Distance Threshold:</span> Merge until a maximum
+        distance is reached.
+      </li>
+      <li>
+        <span class="dark">Domain Knowledge:</span> Choose based on the
+        real-world meaning of clusters.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Applications</h2>
+    <ul>
+      <li>
+        <span class="dark">Customer Segmentation:</span> Group customers based
+        on behavior and spending patterns.
+      </li>
+      <li>
+        <span class="dark">Document Clustering:</span> Organize articles or news
+        into topics.
+      </li>
+      <li>
+        <span class="dark">Image Segmentation:</span> Cluster pixels/features
+        for object grouping.
+      </li>
+      <li>
+        <span class="dark">Bioinformatics:</span> Gene/protein similarity
+        grouping and taxonomy.
+      </li>
+      <li>
+        <span class="dark">Market Basket Analysis:</span> Group similar products
+        and purchase patterns.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Advantages and Limitations</h2>
+    <div class="container mt-4 table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Advantages</th>
+            <th>Limitations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              No need to pre-choose \(k\): Dendrogram helps decide clusters.
+            </td>
+            <td>Slower on large datasets: Can be expensive for big data.</td>
+          </tr>
+          <tr>
+            <td>
+              Dendrogram is interpretable: Shows merging structure clearly.
+            </td>
+            <td>
+              Sensitive to scaling: Features must be normalized/standardized.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Flexible: Works with many distance metrics and linkage methods.
+            </td>
+            <td>Greedy merges: Early wrong merges cannot be undone.</td>
+          </tr>
+          <tr>
+            <td>
+              Good for exploratory analysis: Helps understand data hierarchy.
+            </td>
+            <td>Noise/outliers can distort cluster structure.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-links d-flex justify-content-between">
+    <a href="{% url 'chapter' 'kmeans' %}" class="content-link">
+      <button class="btn btn-dark">Previous</button>
+    </a>
+    <a href="{% url 'chapter' 'svm' %}" class="content-link">
+      <button class="btn btn-primary">Next</button>
+    </a>
+  </div>
+
+  <div class="other-links">
+    <div class="hline"></div>
+    <ul>
+      <li><a href="{% url 'chapter' 'kmeans' %}">K-Means Clustering</a></li>
+      <li><a href="{% url 'chapter' 'knn' %}">K Nearest Neighbours</a></li>
+      <li>
+        <a href="{% url 'chapter' 'decision_tree' %}"
+          >Classification using Decision Trees</a
+        >
+      </li>
+      <li><a href="{% url 'chapter' 'random_forest' %}">Random Forest</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  async
+></script>
+{% endblock %}
