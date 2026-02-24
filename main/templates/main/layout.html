@@ -295,6 +295,10 @@
       $(document).ready(function () {
         $(".fade-in").fadeIn(500);
       });
+      window.STATIC_URLS = {
+        tick: "{% static 'img/tick.svg' %}",
+        bin: "{% static 'img/bin.png' %}"
+      };
     </script>
     {% block script %}{% endblock %}
   </body>

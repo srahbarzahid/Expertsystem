@@ -23,10 +23,10 @@
                 <div class="form-group mt-4 mb-4">
                   <div>
                     <span>{{ uploaded_filename }}</span>
-                    <img src="/static/main/img/tick.svg" class="d-inline ml-2 icon tick" alt="tick">
+                    <img src="{% static 'img/tick.svg' %}" class="d-inline ml-2 icon tick" alt="tick">
                   </div>
                   <button type="button" class="btn btn-outline-primary delete mt-4" id="clear-btn" onclick="clearFile(event)">
-                    <img src="/static/main/img/bin.png" class="mr-2 icon bin" alt="">Clear
+                    <img src="{% static 'img/bin.png' %}" class="mr-2 icon bin" alt="">Clear
                   </button>
                   <button type="button" class="btn btn-primary mt-4" id="uploaded-btn" onclick="handleDataset(event)">
                     Next

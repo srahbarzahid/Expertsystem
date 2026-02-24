@@ -868,6 +868,25 @@ def predict(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
+def _prepare_file_response(file_model):
+    """Helper function to prepare the response data for a DataFile object."""
+    filename, df = file_model.filename, file_model.load_file()
+    if not df.empty:
+        columns = df.columns.tolist()
+        correlation_matrix = df.corr()
+        scatter_plot = plot_scatter(df, columns[0], columns[1]) if len(columns) >= 2 else None
+
+        return {
+            'filename': filename,
+            'file': df.to_dict(),
+            'columns': columns,
+            'correlation_matrix': correlation_matrix.to_dict(),
+            'plot': plot_heatmap(correlation_matrix),
+            'scatter': scatter_plot,
+        }
+    return None
+
+
 @login_required
 def save_file(request):
     """Save the uploaded file or handle preloaded dataset"""
@@ -881,12 +900,15 @@ def save_file(request):
                 return JsonResponse({'error': 'File size is too large. Max file size is 2MB'}, status=400)
 
             # Use pandas to read the file
-            if file.name.endswith('.csv'):
-                df = pd.read_csv(file)
-            elif file.name.endswith('.xls') or file.name.endswith('.xlsx'):
-                df = pd.read_excel(file)
-            else:
-                return JsonResponse({'error': 'Invalid file format. Only CSV and Excel files are allowed'}, status=400)
+            try:
+                if file.name.endswith('.csv'):
+                    df = pd.read_csv(file)
+                elif file.name.endswith('.xls') or file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file)
+                else:
+                    return JsonResponse({'error': 'Invalid file format. Only CSV and Excel files are allowed'}, status=400)
+            except Exception as e:
+                return JsonResponse({'error': f'Error reading file: {str(e)}'}, status=400)
 
             # Store the file as JSON in the db
             file_model = DataFile()
@@ -895,7 +917,11 @@ def save_file(request):
             request.session['file'] = str(file_model.file_id)
             request.session['filename'] = file.name
 
-            return JsonResponse({'message': 'File uploaded successfully!'})
+            response_data = _prepare_file_response(file_model)
+            if response_data:
+                response_data['message'] = 'File uploaded successfully!'
+                return JsonResponse(response_data)
+            return JsonResponse({'error': 'Failed to process uploaded file'}, status=400)
 
         # If a preloaded dataset is selected
         elif request.POST.get('preloaded_dataset'):
@@ -903,12 +929,15 @@ def save_file(request):
             dataset_path = os.path.join(settings.STATIC_ROOT, 'main/files', dataset_name)
 
             # Load the preloaded dataset
-            if dataset_name.endswith('.csv'):
-                df = pd.read_csv(dataset_path)
-            elif dataset_name.endswith('.xls') or dataset_name.endswith('.xlsx'):
-                df = pd.read_excel(dataset_path)
-            else:
-                return JsonResponse({'error': 'Invalid dataset format in preloaded files'}, status=400)
+            try:
+                if dataset_name.endswith('.csv'):
+                    df = pd.read_csv(dataset_path)
+                elif dataset_name.endswith('.xls') or dataset_name.endswith('.xlsx'):
+                    df = pd.read_excel(dataset_path)
+                else:
+                    return JsonResponse({'error': 'Invalid dataset format in preloaded files'}, status=400)
+            except Exception as e:
+                return JsonResponse({'error': f'Error reading preloaded file: {str(e)}'}, status=400)
 
             # Store the dataset as JSON in the db
             file_model = DataFile()
@@ -917,7 +946,11 @@ def save_file(request):
             request.session['file'] = str(file_model.file_id)
             request.session['filename'] = dataset_name
 
-            return JsonResponse({'message': 'Preloaded dataset selected successfully!'})
+            response_data = _prepare_file_response(file_model)
+            if response_data:
+                response_data['message'] = 'Preloaded dataset selected successfully!'
+                return JsonResponse(response_data)
+            return JsonResponse({'error': 'Failed to process preloaded dataset'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
@@ -926,24 +959,17 @@ def save_file(request):
 def get_file(request):
     """Return the file content stored in the session"""
     if request.method == 'POST':
-        file_model = get_object_or_404(DataFile, file_id=request.session.get('file'))
-        filename, df = file_model.filename, file_model.load_file()
-
-        if not df.empty:
-            columns = df.columns.tolist()
-            correlation_matrix = df.corr()
-            scatter_plot = plot_scatter(df, columns[0], columns[1]) if len(columns) >= 2 else None
-
-            return JsonResponse({
-                'filename': filename,
-                'file': df.to_dict(),
-                'columns': columns,
-                'correlation_matrix': correlation_matrix.to_dict(),
-                'plot': plot_heatmap(correlation_matrix),
-                'scatter': scatter_plot,
-            })
-        return JsonResponse({'Error': 'No file available'}, status=400)
+        file_id = request.session.get('file')
+        if not file_id:
+             return JsonResponse({'error': 'No file found in session'}, status=404)
+             
+        file_model = get_object_or_404(DataFile, file_id=file_id)
+        response_data = _prepare_file_response(file_model)
+        if response_data:
+            return JsonResponse(response_data)
+        return JsonResponse({'error': 'No file available'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 
 @login_required

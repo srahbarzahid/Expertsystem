@@ -23,7 +23,7 @@
                 <div class="form-group mt-4 mb-4">
                   <div>
                     <span>{{ uploaded_filename }}</span>
-                    <img src="/static/main/img/tick.svg" class="d-inline ml-2 icon tick" alt="tick">
+                    <img src="{% static 'img/tick.svg' %}" class="d-inline ml-2 icon tick" alt="tick">
                   </div>
                   <button type="button" class="btn btn-outline-primary delete mt-4" id="clear-btn" onclick="clearFile(event)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">

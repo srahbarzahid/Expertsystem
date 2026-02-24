@@ -1,60 +1,66 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Enable Bootstrap popovers
-  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => {
+  const popoverTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="popover"]',
+  );
+  const popoverList = [...popoverTriggerList].map((popoverTriggerEl) => {
     const popover = new bootstrap.Popover(popoverTriggerEl);
 
     // Show popover on mouseover
-    popoverTriggerEl.addEventListener('mouseover', () => {
+    popoverTriggerEl.addEventListener("mouseover", () => {
       popover.show();
     });
 
     // Hide popover on mouseout
-    popoverTriggerEl.addEventListener('mouseout', () => {
+    popoverTriggerEl.addEventListener("mouseout", () => {
       popover.hide();
     });
 
     return popover;
-  });  
+  });
 });
 
 function handleChange(event) {
   const file = event.target.files[0];
-  if (file) $('#upload-btn').prop('disabled', false);
+  if (file) $("#upload-btn").prop("disabled", false);
 }
 
 function handlePreloadedFileChange(event) {
   const dataset = event.target.value;
-  if (dataset) $('#upload-btn').prop('disabled', false);
+  if (dataset) $("#upload-btn").prop("disabled", false);
 }
 
 function initiatePreprocessing(event) {
-  $('.preprocessing-dataset-selection').addClass('d-none');
+  $(".preprocessing-dataset-selection").addClass("d-none");
 
-  const isUpload = document.getElementById('option-upload').checked;
+  const isUpload = document.getElementById("option-upload").checked;
   if (isUpload) {
-    const fileInput = document.getElementById('file');
+    const fileInput = document.getElementById("file");
     const file = fileInput.files[0];
     const formData = new FormData();
-    formData.append('file', file);
-    fileInput.parentElement.innerHTML = file.name + '<img src="/static/main/img/tick.svg" class="d-inline ml-2 icon tick" alt="tick">';
+    formData.append("file", file);
+    fileInput.parentElement.innerHTML =
+      file.name +
+      `<img src="${window.STATIC_URLS.tick}" class="d-inline ml-2 icon tick" alt="tick">`;
     preview_data(formData);
   } else {
-    const dataset = document.getElementById('preloaded-dataset').value;
+    const dataset = document.getElementById("preloaded-dataset").value;
     if (!dataset) {
-      showWarningToast('Please select a preloaded dataset.');
+      showWarningToast("Please select a preloaded dataset.");
       return;
     }
-    const preloadedDiv = document.getElementById('preloaded-div');
-    preloadedDiv.innerHTML = dataset + '<img src="/static/main/img/tick.svg" class="d-inline ml-2 icon tick" alt="tick">';
+    const preloadedDiv = document.getElementById("preloaded-div");
+    preloadedDiv.innerHTML =
+      dataset +
+      `<img src="${window.STATIC_URLS.tick}" class="d-inline ml-2 icon tick" alt="tick">`;
     const formData = new FormData();
-    formData.append('preloaded_dataset', dataset);
+    formData.append("preloaded_dataset", dataset);
     preview_data(formData);
   }
 
-  $('#upload-btn').addClass('d-none');
-  $('.sections').removeClass('d-none');
-  $('.sections-btn').removeClass('d-none');
+  $("#upload-btn").addClass("d-none");
+  $(".sections").removeClass("d-none");
+  $(".sections-btn").removeClass("d-none");
 }
 
 const featureSelectionDiv = document.getElementById("feature_selection");
@@ -64,68 +70,72 @@ const feat = "feature_selection";
 const enco = "encoding_selection";
 const scale = "scaling_selection";
 
-function preview_data(formData) {    
+function preview_data(formData) {
   let text, headers, null_columns;
 
-  fetch('/preprocessing', {
-    method: 'POST',
+  fetch("/preprocessing", {
+    method: "POST",
     body: formData,
     headers: {
-      'X-CSRFToken': getCSRFToken(),
+      "X-CSRFToken": getCSRFToken(),
     },
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      showError('Error!', data.error);
-    } else {
-      text = JSON.parse(data.json_data);
-      headers = data.headers;
-      null_columns = data.null_columns;
-      non_numerical_cols = data.non_numerical_cols;
-      generatecolumns(null_columns, featureSelectionDiv, "feature_selection"); // Generate columns for missing values     
-      generatecolumns(non_numerical_cols, encoding_selection, "encoding_selection"); // Generate columns for encoding
-      generatecolumns(headers, scale_selection, "scaling_selection"); // Generate columns for scaling
-      generateTable(text, null_columns); // Append the generated table to the container
-    }
-  })
-  .catch(error => {
-    showError('Error!', 'An error occurred. Please try again.');
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.error) {
+        showError("Error!", data.error);
+      } else {
+        text = JSON.parse(data.json_data);
+        headers = data.headers;
+        null_columns = data.null_columns;
+        non_numerical_cols = data.non_numerical_cols;
+        generatecolumns(null_columns, featureSelectionDiv, "feature_selection"); // Generate columns for missing values
+        generatecolumns(
+          non_numerical_cols,
+          encoding_selection,
+          "encoding_selection",
+        ); // Generate columns for encoding
+        generatecolumns(headers, scale_selection, "scaling_selection"); // Generate columns for scaling
+        generateTable(text, null_columns); // Append the generated table to the container
+      }
+    })
+    .catch((error) => {
+      showError("Error!", "An error occurred. Please try again.");
+    });
 }
 
 // Function to generate table from JSON data
 function generateTable(jsonData, null_columns) {
-  const container = document.getElementById('csv-preview-container');
+  const container = document.getElementById("csv-preview-container");
 
   // Clear existing content
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   // Create table
-  const table = document.createElement('table');
-  table.className = 'table table-bordered table-hover table-striped';
+  const table = document.createElement("table");
+  table.className = "table table-bordered table-hover table-striped";
 
   // Create table headers
-  const headerRow = document.createElement('tr');
-  Object.keys(jsonData[0]).forEach(key => {
-    const th = document.createElement('th');
+  const headerRow = document.createElement("tr");
+  Object.keys(jsonData[0]).forEach((key) => {
+    const th = document.createElement("th");
     th.innerText = key.charAt(0).toUpperCase() + key.slice(1);
     if (null_columns.includes(key)) {
-      th.classList.add('bg-warning'); // Highlight null columns
+      th.classList.add("bg-warning"); // Highlight null columns
     }
     headerRow.appendChild(th);
   });
 
-  const thead = document.createElement('thead');
+  const thead = document.createElement("thead");
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
   // Create table body
-  const tbody = document.createElement('tbody');
-  jsonData.forEach(item => {
-    const row = document.createElement('tr');
-    Object.values(item).forEach(value => {
-      const td = document.createElement('td');
+  const tbody = document.createElement("tbody");
+  jsonData.forEach((item) => {
+    const row = document.createElement("tr");
+    Object.values(item).forEach((value) => {
+      const td = document.createElement("td");
       td.innerText = value;
       row.appendChild(td);
     });
@@ -135,16 +145,16 @@ function generateTable(jsonData, null_columns) {
 
   // Append table to container
   container.appendChild(table);
-  $('#data-info').removeClass('d-none');
+  $("#data-info").removeClass("d-none");
 }
-        
-// Populate the column for selection 
+
+// Populate the column for selection
 function generatecolumns(columns, SelectionDiv, selection) {
   // Clear any existing checkboxes
-  SelectionDiv.innerHTML = '';
+  SelectionDiv.innerHTML = "";
 
   // Iterate over the columns array
-  columns.forEach(column => {
+  columns.forEach((column) => {
     // Create a new checkbox input element
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -169,15 +179,15 @@ function generatecolumns(columns, SelectionDiv, selection) {
     SelectionDiv.appendChild(checkboxDiv);
   });
 }
- 
+
 // Get the CSRF token from the cookie
 function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+      if (cookie.substring(0, name.length + 1) === name + "=") {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -188,116 +198,123 @@ function getCookie(name) {
 
 function applyMissingValueStrategy() {
   const strategy = document.getElementById("missing_value_strategy").value;
-  const selectedColumns = Array.from(document.querySelectorAll('input[name="feature_selection"]:checked')).map(checkbox => checkbox.value);
+  const selectedColumns = Array.from(
+    document.querySelectorAll('input[name="feature_selection"]:checked'),
+  ).map((checkbox) => checkbox.value);
 
-  fetch('/preprocessing/fill-missing/', {
-    method: 'POST',
+  fetch("/preprocessing/fill-missing/", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken'),  // Use a helper function to get CSRF token
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"), // Use a helper function to get CSRF token
     },
     body: JSON.stringify({
       strategy: strategy,
-      columns: selectedColumns
+      columns: selectedColumns,
     }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      showWarningToast(data.error);
-    } else {
-      text=JSON.parse(data.json_data)        
-      headers=data.headers
-      null_columns=data.null_columns
-      non_numerical_cols=data.non_numerical_cols
-      generatecolumns(null_columns,featureSelectionDiv,feat)    //generate columns for missing values     
-      generatecolumns(non_numerical_cols,encoding_selection,enco)         //generate columns for encoding
-      generatecolumns(headers,scale_selection,scale)
-      generateTable(text,null_columns); // Append the generated table to the container
-    }
-  })
-  .catch(error => {
-    showWarningToast(`An error occurred: ${error}`);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.error) {
+        showWarningToast(data.error);
+      } else {
+        text = JSON.parse(data.json_data);
+        headers = data.headers;
+        null_columns = data.null_columns;
+        non_numerical_cols = data.non_numerical_cols;
+        generatecolumns(null_columns, featureSelectionDiv, feat); //generate columns for missing values
+        generatecolumns(non_numerical_cols, encoding_selection, enco); //generate columns for encoding
+        generatecolumns(headers, scale_selection, scale);
+        generateTable(text, null_columns); // Append the generated table to the container
+      }
+    })
+    .catch((error) => {
+      showWarningToast(`An error occurred: ${error}`);
+    });
 }
-document.getElementById('missing_value_strategybtn').addEventListener('click', applyMissingValueStrategy);
-
+document
+  .getElementById("missing_value_strategybtn")
+  .addEventListener("click", applyMissingValueStrategy);
 
 function encoding() {
   const strategy = document.getElementById("encoding_strategy").value;
-  const selectedColumns = Array.from(document.querySelectorAll('input[name="encoding_selection"]:checked'))
-      .map(input => input.value);
+  const selectedColumns = Array.from(
+    document.querySelectorAll('input[name="encoding_selection"]:checked'),
+  ).map((input) => input.value);
 
-  fetch('/preprocessing/encoding/', {
-    method: 'POST',
+  fetch("/preprocessing/encoding/", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken'),  // Use a helper function to get CSRF token
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"), // Use a helper function to get CSRF token
     },
     body: JSON.stringify({
       strategy: strategy,
-      columns: selectedColumns
+      columns: selectedColumns,
     }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      showWarningToast(data.error);
-    } else {
-        
-      text=JSON.parse(data.json_data)        
-      headers=data.headers
-      null_columns=data.null_columns
-      non_numerical_cols=data.non_numerical_cols
-      generatecolumns(null_columns,featureSelectionDiv,feat)    //generate columns for missing values     
-      generatecolumns(non_numerical_cols,encoding_selection,enco)         //generate columns for encoding
-      generatecolumns(headers,scale_selection,scale)
-      generateTable(text,null_columns); // Append the generated table to the container
-    }
-  })
-  .catch(error => { 
-    showWarningToast(`An error occurred: ${error}`);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.error) {
+        showWarningToast(data.error);
+      } else {
+        text = JSON.parse(data.json_data);
+        headers = data.headers;
+        null_columns = data.null_columns;
+        non_numerical_cols = data.non_numerical_cols;
+        generatecolumns(null_columns, featureSelectionDiv, feat); //generate columns for missing values
+        generatecolumns(non_numerical_cols, encoding_selection, enco); //generate columns for encoding
+        generatecolumns(headers, scale_selection, scale);
+        generateTable(text, null_columns); // Append the generated table to the container
+      }
+    })
+    .catch((error) => {
+      showWarningToast(`An error occurred: ${error}`);
+    });
 }
-document.getElementById('encoding_strategybtn').addEventListener('click', encoding);
-
+document
+  .getElementById("encoding_strategybtn")
+  .addEventListener("click", encoding);
 
 function applyScalingStrategy() {
   const scalingStrategy = document.getElementById("scaling_strategy").value;
-  const selectedColumns = Array.from(document.querySelectorAll('input[name="scaling_selection"]:checked'))
-    .map(input => input.value);
+  const selectedColumns = Array.from(
+    document.querySelectorAll('input[name="scaling_selection"]:checked'),
+  ).map((input) => input.value);
 
-  fetch('/preprocessing/scaling/', {
-    method: 'POST',
+  fetch("/preprocessing/scaling/", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken'), 
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
     },
     body: JSON.stringify({
       strategy: scalingStrategy,
-      columns: selectedColumns
+      columns: selectedColumns,
     }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      showWarningToast(data.error);
-    } else {
-      text=JSON.parse(data.json_data)        
-      headers=data.headers
-      null_columns=data.null_columns
-      non_numerical_cols=data.non_numerical_cols
-      generatecolumns(null_columns,featureSelectionDiv,feat)    //generate columns for missing values     
-      generatecolumns(non_numerical_cols,encoding_selection,enco)         //generate columns for encoding
-      generatecolumns(headers,scale_selection,scale)
-      generateTable(text,null_columns); // Append the generated table to the container
-    }
-  })
-  .catch(error => {
-    showWarningToast(`An error occurred: ${error}`);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.error) {
+        showWarningToast(data.error);
+      } else {
+        text = JSON.parse(data.json_data);
+        headers = data.headers;
+        null_columns = data.null_columns;
+        non_numerical_cols = data.non_numerical_cols;
+        generatecolumns(null_columns, featureSelectionDiv, feat); //generate columns for missing values
+        generatecolumns(non_numerical_cols, encoding_selection, enco); //generate columns for encoding
+        generatecolumns(headers, scale_selection, scale);
+        generateTable(text, null_columns); // Append the generated table to the container
+      }
+    })
+    .catch((error) => {
+      showWarningToast(`An error occurred: ${error}`);
+    });
 }
-document.getElementById('scaling_strategybtn').addEventListener('click', applyScalingStrategy);
+document
+  .getElementById("scaling_strategybtn")
+  .addEventListener("click", applyScalingStrategy);
 
 // Function to control the visibility of sections
 function showSection(sectionId) {
@@ -306,9 +323,12 @@ function showSection(sectionId) {
   document.getElementById("encoding_section").style.display = "none";
   document.getElementById("scaling_section").style.display = "none";
   // Reset class of all buttons
-  document.getElementById("missing_value_section-btn").classList = "btn btn-primary mb-auto w-100";
-  document.getElementById("encoding_section-btn").classList = "btn btn-primary mb-auto w-100";
-  document.getElementById("scaling_section-btn").classList = "btn btn-primary mb-auto w-100";
+  document.getElementById("missing_value_section-btn").classList =
+    "btn btn-primary mb-auto w-100";
+  document.getElementById("encoding_section-btn").classList =
+    "btn btn-primary mb-auto w-100";
+  document.getElementById("scaling_section-btn").classList =
+    "btn btn-primary mb-auto w-100";
 
   // Mark the selected section
   let thisBtn = document.getElementById(sectionId + "-btn");
@@ -351,46 +371,47 @@ function toggleGuide() {
     focusConfirm: false,
     showConfirmButton: false,
     customClass: {
-      popup: 'custom-popup', 
-      htmlContainer: 'custom-html'
+      popup: "custom-popup",
+      htmlContainer: "custom-html",
     },
-    width: '80%',
+    width: "80%",
   });
 }
-
 
 // Get data details and display in a table inside a SweetAlert modal
 function toggleInfo() {
   Swal.fire({
-    title: 'Data Details',
+    title: "Data Details",
     html: `<div id="data-table-container"></div>`, // The div where the table will be inserted
     showCloseButton: true,
     focusConfirm: false,
-    confirmButtonText: 'Close',
+    confirmButtonText: "Close",
     customClass: {
-      popup: 'custom-popup', // Custom class for the popup
-      htmlContainer: 'table-info-container' // Custom class for HTML content inside popup
+      popup: "custom-popup", // Custom class for the popup
+      htmlContainer: "table-info-container", // Custom class for HTML content inside popup
     },
-    width: '80%', // Adjust width of the alert box (increase the size)
+    width: "80%", // Adjust width of the alert box (increase the size)
   });
 
-  fetch('preprocessing/scaling/data_details/', {
+  fetch("preprocessing/scaling/data_details/", {
     // method: 'POST',  // Uncomment if needed for your request
     // headers: {
     //   'Content-Type': 'application/json',
     //   'X-CSRFToken': getCookie('csrftoken'),  // Add CSRF token if required
     // },
   })
-  .then(response => response.json())
-  .then(data => {
-    // Build the table for column-wise details
-    let tableHtml = '<table class="table table-bordered table-striped table-hover">'; // Add `table-hover` for better UX
-    tableHtml += '<thead class="table-light"><tr><th>Column Name</th><th>Data Type</th><th>Non-null Count</th><th>Missing Values</th></tr></thead>';
-    tableHtml += '<tbody>';
+    .then((response) => response.json())
+    .then((data) => {
+      // Build the table for column-wise details
+      let tableHtml =
+        '<table class="table table-bordered table-striped table-hover">'; // Add `table-hover` for better UX
+      tableHtml +=
+        '<thead class="table-light"><tr><th>Column Name</th><th>Data Type</th><th>Non-null Count</th><th>Missing Values</th></tr></thead>';
+      tableHtml += "<tbody>";
 
-    // Loop through columns in the data and create table rows
-    for (let col in data.data_types) {
-      tableHtml += `
+      // Loop through columns in the data and create table rows
+      for (let col in data.data_types) {
+        tableHtml += `
         <tr>
           <td>${col}</td>
           <td>${data.data_types[col]}</td>
@@ -398,16 +419,16 @@ function toggleInfo() {
           <td>${data.missing_values[col]}</td>
         </tr>
       `;
-    }
+      }
 
-    tableHtml += '</tbody>';
-    tableHtml += '</table>';
+      tableHtml += "</tbody>";
+      tableHtml += "</table>";
 
-    // Render the column table inside the Swal popup
-    document.getElementById('data-table-container').innerHTML = tableHtml;
+      // Render the column table inside the Swal popup
+      document.getElementById("data-table-container").innerHTML = tableHtml;
 
-    // Append additional information (Shape, Memory Usage, Numeric Summary, and Data Info)
-    let additionalInfoHtml = `
+      // Append additional information (Shape, Memory Usage, Numeric Summary, and Data Info)
+      let additionalInfoHtml = `
       <h5 class="mt-4">Dataset Shape</h5>
       <ul class="list-unstyled">
         <li><strong>Rows:</strong> ${data.shape[0]}</li>
@@ -420,14 +441,16 @@ function toggleInfo() {
           <tr><th>Column Name</th><th>Memory Usage</th></tr>
         </thead>
         <tbody>
-          ${Object.keys(data.memory_usage).map(col => {
-            return `
+          ${Object.keys(data.memory_usage)
+            .map((col) => {
+              return `
               <tr>
                 <td>${col}</td>
                 <td>${data.memory_usage[col]}</td>
               </tr>
             `;
-          }).join('')}
+            })
+            .join("")}
         </tbody>
       </table>
       
@@ -444,8 +467,9 @@ function toggleInfo() {
           </tr>
         </thead>
         <tbody>
-          ${Object.keys(data.numeric_summary).map(col => {
-            return `
+          ${Object.keys(data.numeric_summary)
+            .map((col) => {
+              return `
               <tr>
                 <td>${col}</td>
                 <td>${data.numeric_summary[col].count}</td>
@@ -455,7 +479,8 @@ function toggleInfo() {
                 <td>${data.numeric_summary[col].std}</td>
               </tr>
             `;
-          }).join('')}
+            })
+            .join("")}
         </tbody>
       </table>
       
@@ -465,17 +490,16 @@ function toggleInfo() {
       </div>
     `;
 
-    // Append the additional information below the table
-    document.getElementById('data-table-container').innerHTML += additionalInfoHtml;
-
-  })
-  .catch(error => {
-    showWarningToast(`An error occurred: ${error}`);
-  });
+      // Append the additional information below the table
+      document.getElementById("data-table-container").innerHTML +=
+        additionalInfoHtml;
+    })
+    .catch((error) => {
+      showWarningToast(`An error occurred: ${error}`);
+    });
 }
 
 function toggleCategories() {
-  document.getElementById('category-display').classList.toggle('d-none');
-  document.getElementById('training-btn-div').classList.toggle('d-none');
+  document.getElementById("category-display").classList.toggle("d-none");
+  document.getElementById("training-btn-div").classList.toggle("d-none");
 }
-
