@@ -17,6 +17,7 @@ TEMPLATES = {
     'decision_tree': 'learn/decision_tree.html',
     'naive_bayes': 'learn/naive_bayes.html',
     'linear_regression': 'learn/linear_regression.html',
+    'random_forest': 'learn/random_forest.html',
     'regression_metrics': 'learn/regression_metrics.html',
     'kmeans': 'learn/kmeans.html',
     'svm': 'learn/svm.html',

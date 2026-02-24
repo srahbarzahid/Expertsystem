@@ -1,0 +1,259 @@
+{% extends "learn/layout.html" %} {% load static %} {% block title %}Random
+Forest{% endblock %} {% block body %}
+<div>
+  <h1 class="chapter-title">Random Forest</h1>
+  <div class="chapter-content">
+    <p>
+      <span class="dark">Random Forest</span> is an ensemble learning method
+      that combines multiple decision trees to make more accurate and stable
+      predictions. Instead of relying on a single tree, it builds many trees
+      using random subsets of the data and features, then aggregates their
+      outputs to reduce overfitting and improve generalization. Random Forest
+      can be used for both <span class="red">classification</span> and
+      <span class="red">regression</span>.
+    </p>
+
+    <h2 class="chapter-subheading">How Random Forest Works</h2>
+    <ul>
+      <li>
+        <span class="dark">Bootstrap Sampling (Bagging):</span> Each tree is
+        trained on a random sample (with replacement) of the training dataset.
+      </li>
+      <li>
+        <span class="dark">Random Feature Selection:</span> At each split, only
+        a random subset of features is considered, which increases diversity
+        among trees.
+      </li>
+      <li>
+        <span class="dark">Aggregation:</span> For classification, the final
+        output is the <span class="dark">majority vote</span>. For regression,
+        the final output is the <span class="dark">average</span> of all tree
+        predictions.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Prediction Formulation</h2>
+    <ul>
+      <li>
+        <span class="dark">Classification (Majority Vote):</span>
+        $$ \hat{y} = \text{mode}\{T_1(x), T_2(x), \ldots, T_k(x)\} $$
+      </li>
+      <li>
+        <span class="dark">Regression (Averaging):</span>
+        $$ \hat{y} = \frac{1}{k}\sum_{j=1}^{k} T_j(x) $$
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Key Hyperparameters</h2>
+    <ul>
+      <li>
+        <span class="dark">n_estimators:</span> Number of trees in the forest.
+      </li>
+      <li>
+        <span class="dark">max_depth:</span> Maximum depth of each decision
+        tree.
+      </li>
+      <li>
+        <span class="dark">max_features:</span> Number of features considered at
+        each split (e.g., "sqrt", "log2").
+      </li>
+      <li>
+        <span class="dark">min_samples_split / min_samples_leaf:</span> Controls
+        minimum samples needed to split a node or be a leaf.
+      </li>
+      <li>
+        <span class="dark">bootstrap:</span> Whether bootstrap sampling is used.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Advantages of Randomness</h2>
+    <p>
+      The randomness (data sampling + feature sampling) reduces correlation
+      between individual trees. This makes the combined model more robust and
+      less likely to overfit compared to a single decision tree.
+    </p>
+
+    <h2 class="chapter-subheading">Code</h2>
+    <div class="code-block">
+      <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, ConfusionMatrixDisplay
+
+# 1) Create synthetic classification dataset (2 features for easy plotting)
+X, y = make_classification(
+    n_samples=600,
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    class_sep=1.2,
+    random_state=42
+)
+
+# 2) Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, train_size=0.7, random_state=42
+)
+
+# 3) Train Random Forest Classifier
+model = RandomForestClassifier(
+    n_estimators=200,
+    max_depth=None,
+    random_state=42
+)
+model.fit(X_train, y_train)
+
+# 4) Predict and evaluate
+y_pred = model.predict(X_test)
+acc = accuracy_score(y_test, y_pred)
+print("Accuracy:", acc)
+
+# 5) Plot Decision Boundary
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(
+    np.linspace(x_min, x_max, 400),
+    np.linspace(y_min, y_max, 400)
+)
+
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+plt.figure(figsize=(6, 5))
+plt.contourf(xx, yy, Z, alpha=0.3)
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, edgecolors="k", s=35)
+plt.title(f"Random Forest Classification (Accuracy = {acc:.2f})")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.tight_layout()
+plt.show()
+
+# 6) Confusion Matrix (optional plot)
+ConfusionMatrixDisplay.from_estimator(model, X_test, y_test)
+plt.title("Random Forest - Confusion Matrix")
+plt.tight_layout()
+plt.show()</code></pre>
+    </div>
+
+    <div class="img-div">
+      <img
+        src="{% static 'learn/img/random_forest.png' %}"
+        alt="Random Forest"
+        style="width: 400px"
+      />
+      <span class="caption">Random Forest</span>
+    </div>
+
+    <h2 class="chapter-subheading">Feature Importance</h2>
+    <p>
+      Random Forest can estimate how important each feature is based on how much
+      it reduces impurity across all trees. This is useful for interpretation
+      and feature selection.
+    </p>
+    $$ \text{Importance}(f) = \sum \Delta \text{Impurity contributed by } f
+    \text{ over all splits/trees} $$
+
+    <h2 class="chapter-subheading">Applications</h2>
+    <ul>
+      <li>
+        <span class="dark">Fraud Detection:</span> Detecting suspicious
+        transactions in banking and e-commerce.
+      </li>
+      <li>
+        <span class="dark">Healthcare:</span> Disease risk prediction using
+        patient records.
+      </li>
+      <li>
+        <span class="dark">Computer Vision:</span> Traditional image
+        classification tasks using engineered features.
+      </li>
+      <li>
+        <span class="dark">Customer Analytics:</span> Churn prediction and
+        customer segmentation.
+      </li>
+      <li>
+        <span class="dark">Agriculture:</span> Yield prediction based on climate
+        and soil metrics.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Advantages and Limitations</h2>
+    <div class="container mt-4 table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Advantages</th>
+            <th>Limitations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>High Accuracy: Strong performance on many datasets.</td>
+            <td>
+              Less Interpretable: Harder to interpret than a single decision
+              tree.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Reduces Overfitting: Averaging many trees improves generalization.
+            </td>
+            <td>
+              Slower Training: More trees require more computation and memory.
+            </td>
+          </tr>
+          <tr>
+            <td>Handles Non-Linearity: Captures complex relationships well.</td>
+            <td>
+              Bias in Importance: Standard feature importance can favor
+              high-cardinality features.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Works with Mixed Data: Handles numerical + categorical (after
+              encoding).
+            </td>
+            <td>Large Model Size: Can be heavy to deploy if too many trees.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-links d-flex justify-content-between">
+    <a href="{% url 'chapter' 'linear_regression' %}" class="content-link">
+      <button class="btn btn-dark">Previous</button>
+    </a>
+    <a href="{% url 'chapter' 'regression_metrics' %}" class="content-link">
+      <button class="btn btn-primary">Next</button>
+    </a>
+  </div>
+
+  <div class="other-links">
+    <div class="hline"></div>
+    <ul>
+      <li><a href="{% url 'chapter' 'knn' %}">K Nearest Neighbours</a></li>
+      <li>
+        <a href="{% url 'chapter' 'decision_tree' %}"
+          >Classification using Decision Trees</a
+        >
+      </li>
+      <li>
+        <a href="{% url 'chapter' 'naive_bayes' %}">Naive Bayes Classifier</a>
+      </li>
+      <li>
+        <a href="{% url 'chapter' 'linear_regression' %}">Linear Regression</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  async
+></script>
+{% endblock %}
