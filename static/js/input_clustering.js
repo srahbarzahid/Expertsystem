@@ -40,11 +40,24 @@ function handleFileUpload(event) {
         "X-CSRFToken": getCSRFToken(),
       },
     })
-      .then((response) => {
+      .then(async (response) => {
+        const contentType = response.headers.get("content-type");
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Network response was not ok");
+          } else {
+            const errorText = await response.text();
+            console.error("Non-JSON error response:", errorText);
+            throw new Error(
+              "Server error: The server returned an unexpected response. Please try again.",
+            );
+          }
         }
-        return response.json();
+        if (contentType && contentType.includes("application/json")) {
+          return response.json();
+        }
+        throw new Error("Invalid response format from server.");
       })
       .then((data) => {
         fileInput.disabled = true;
@@ -73,10 +86,7 @@ function handleFileUpload(event) {
         // Reactivate file input field
         fileInput.disabled = false;
         // Alert user and reload page
-        showError(
-          "Upload Error!",
-          "An error occurred while uploading the file. Please try again with a different dataset.",
-        );
+        showError("Upload Error!", error.message);
         console.error("Could not store file: ", error);
       });
   }
@@ -134,10 +144,7 @@ function handleFileSelection(event) {
     })
     .catch((error) => {
       // Handle errors during dataset retrieval
-      showError(
-        "Selection Error!",
-        "An error occurred while retrieving the dataset. Please try again with a different dataset.",
-      );
+      showError("Selection Error!", error.message);
       console.error("Error during dataset retrieval: ", error);
     });
 }
@@ -174,10 +181,7 @@ function handlePreprocessedDataset(event) {
     })
     .catch((error) => {
       // Handle errors during dataset retrieval
-      showError(
-        "Selection Error!",
-        "An error occurred while retrieving the dataset. Please try again with a different dataset.",
-      );
+      showError("Selection Error!", error.message);
       console.error("Error during dataset retrieval: ", error);
     });
 }

@@ -283,6 +283,9 @@ def plot_clusters(X, labels, centroids, features, x_feature, y_feature):
 
 def plot_heatmap(correlation_matrix):
     """Plot Correlation Heatmap from the session"""
+    if correlation_matrix.empty:
+        return json.dumps(go.Figure(), cls=PlotlyJSONEncoder)
+        
     fig = px.imshow(
         correlation_matrix, 
         color_continuous_scale="RdBu",

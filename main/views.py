@@ -9,6 +9,8 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+from sklearn.utils.multiclass import type_of_target
 from sklearn.cluster import KMeans
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.impute import SimpleImputer
@@ -163,6 +165,8 @@ def lasso(request):
         alpha, max_iter, tol = float(alpha), int(max_iter), float(tol)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         model = Lasso(alpha=alpha, max_iter=max_iter, tol=tol)
@@ -217,6 +221,8 @@ def ridge(request):
         alpha, max_iter, tol = float(alpha), int(max_iter), float(tol)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         model = Ridge(alpha=alpha, max_iter=max_iter, tol=tol)
@@ -271,6 +277,8 @@ def decision_tree_regression(request):
         min_samples_split = int(min_samples_split)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         if not max_depth:
@@ -321,6 +329,8 @@ def random_forest_regression(request):
         n_estimators, min_samples_split = int(n_estimators), int(min_samples_split)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         if not max_depth:
@@ -375,6 +385,8 @@ def knn(request):
         n_neighbors, p = int(n_neighbors), int(p)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         model = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm, metric=metric, p=p)
@@ -429,6 +441,8 @@ def logistic_regression(request):
         C = float(C)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         model = LogisticRegression(solver=solver, penalty=penalty, C=C)
@@ -477,6 +491,8 @@ def naive_bayes(request):
         var_smoothing = float(var_smoothing)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         model = GaussianNB(var_smoothing=var_smoothing)
@@ -526,6 +542,8 @@ def decision_tree(request):
         min_samples_split = int(min_samples_split)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         if not max_depth:
@@ -579,6 +597,8 @@ def random_forest(request):
         n_estimators, min_samples_split = int(n_estimators), int(min_samples_split)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         if not max_depth:
@@ -638,6 +658,8 @@ def svm(request):
         C, degree = float(C), int(degree)
 
         X, y = df[features], df[target]
+
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
         model = SVC(kernel=kernel, C=C, gamma=gamma, degree=degree, random_state=42)
@@ -871,10 +893,19 @@ def predict(request):
 def _prepare_file_response(file_model):
     """Helper function to prepare the response data for a DataFile object."""
     filename, df = file_model.filename, file_model.load_file()
-    if not df.empty:
+    if df is not None and not df.empty:
         columns = df.columns.tolist()
-        correlation_matrix = df.corr()
-        scatter_plot = plot_scatter(df, columns[0], columns[1]) if len(columns) >= 2 else None
+        
+        # Defensive Correlation: Only use numeric columns for the matrix
+        df_numeric = df.select_dtypes(include=[np.number])
+        correlation_matrix = df_numeric.corr() if not df_numeric.empty else pd.DataFrame()
+        
+        scatter_plot = None
+        if len(columns) >= 2:
+             try:
+                scatter_plot = plot_scatter(df, columns[0], columns[1])
+             except:
+                scatter_plot = None
 
         return {
             'filename': filename,
@@ -892,14 +923,11 @@ def save_file(request):
     """Save the uploaded file or handle preloaded dataset"""
     if request.method == 'POST':
         # If a file is uploaded
+        # If a file is uploaded
         if request.FILES.get('file'):
             file = request.FILES['file']
-
-            # Check file size and format
-            if file.size > 2 * 1024 * 1024:  # 2MB
+            if file.size > 2 * 1024 * 1024:
                 return JsonResponse({'error': 'File size is too large. Max file size is 2MB'}, status=400)
-
-            # Use pandas to read the file
             try:
                 if file.name.endswith('.csv'):
                     df = pd.read_csv(file)
@@ -909,26 +937,12 @@ def save_file(request):
                     return JsonResponse({'error': 'Invalid file format. Only CSV and Excel files are allowed'}, status=400)
             except Exception as e:
                 return JsonResponse({'error': f'Error reading file: {str(e)}'}, status=400)
-
-            # Store the file as JSON in the db
-            file_model = DataFile()
-            file_model.uploaded_by = request.user
-            file_model.save_file(file.name, df)
-            request.session['file'] = str(file_model.file_id)
-            request.session['filename'] = file.name
-
-            response_data = _prepare_file_response(file_model)
-            if response_data:
-                response_data['message'] = 'File uploaded successfully!'
-                return JsonResponse(response_data)
-            return JsonResponse({'error': 'Failed to process uploaded file'}, status=400)
+            filename = file.name
 
         # If a preloaded dataset is selected
         elif request.POST.get('preloaded_dataset'):
             dataset_name = request.POST['preloaded_dataset']
             dataset_path = os.path.join(settings.STATIC_ROOT, 'main/files', dataset_name)
-
-            # Load the preloaded dataset
             try:
                 if dataset_name.endswith('.csv'):
                     df = pd.read_csv(dataset_path)
@@ -938,19 +952,50 @@ def save_file(request):
                     return JsonResponse({'error': 'Invalid dataset format in preloaded files'}, status=400)
             except Exception as e:
                 return JsonResponse({'error': f'Error reading preloaded file: {str(e)}'}, status=400)
+            filename = dataset_name
+        else:
+            return JsonResponse({'error': 'No dataset provided'}, status=400)
 
-            # Store the dataset as JSON in the db
+        # ---- DUAL VALIDATION LOGIC ----
+        try:
+            if df is not None and not df.empty:
+                last_column = df.columns[-1]
+                features_df = df.iloc[:, :-1]
+                target_series = df[last_column]
+                
+                # Case 1: Text values in features
+                non_numeric_features = features_df.select_dtypes(exclude=[np.number]).columns.tolist()
+                if non_numeric_features:
+                    return JsonResponse({
+                        'error': f"an error occurd while uploading file... The dataset contains text values in features ({', '.join(non_numeric_features)}). Please encode them first."
+                    }, status=400)
+                
+                # Case 2: Model Context Mismatch
+                referer = request.META.get('HTTP_REFERER', '')
+                if '/classification/' in referer:
+                    if type_of_target(target_series) in ['continuous', 'continuous-multioutput']:
+                        return JsonResponse({'error': 'the dataset only used to train the regression'}, status=400)
+                elif '/regression/' in referer:
+                    if type_of_target(target_series) in ['binary', 'multiclass']:
+                        return JsonResponse({'error': 'the dataset only used to train the classification only'}, status=400)
+        except Exception as e:
+             return JsonResponse({'error': f'Validation error: {str(e)}'}, status=400)
+
+        # Store the dataset as JSON in the db
+        try:
             file_model = DataFile()
             file_model.uploaded_by = request.user
-            file_model.save_file(dataset_name, df)
+            file_model.save_file(filename, df)
             request.session['file'] = str(file_model.file_id)
-            request.session['filename'] = dataset_name
+            request.session['filename'] = filename
 
             response_data = _prepare_file_response(file_model)
             if response_data:
-                response_data['message'] = 'Preloaded dataset selected successfully!'
+                response_data['message'] = 'Dataset processed successfully!'
                 return JsonResponse(response_data)
-            return JsonResponse({'error': 'Failed to process preloaded dataset'}, status=400)
+            return JsonResponse({'error': 'Failed to generate response data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': f'Storage error: {str(e)}'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
@@ -964,6 +1009,33 @@ def get_file(request):
              return JsonResponse({'error': 'No file found in session'}, status=404)
              
         file_model = get_object_or_404(DataFile, file_id=file_id)
+        df = file_model.load_file()
+        
+        # ---- DUAL VALIDATION LOGIC ----
+        try:
+            if df is not None and not df.empty:
+                last_column = df.columns[-1]
+                features_df = df.iloc[:, :-1]
+                target_series = df[last_column]
+                
+                # Case 1: Text values in features
+                non_numeric_features = features_df.select_dtypes(exclude=[np.number]).columns.tolist()
+                if non_numeric_features:
+                    return JsonResponse({
+                        'error': f"an error occurd while uploading file... The dataset contains text values in features ({', '.join(non_numeric_features)}). Please encode them first."
+                    }, status=400)
+                
+                # Case 2: Model Context Mismatch
+                referer = request.META.get('HTTP_REFERER', '')
+                if '/classification/' in referer:
+                    if type_of_target(target_series) in ['continuous', 'continuous-multioutput']:
+                        return JsonResponse({'error': 'the dataset only used to train the regression'}, status=400)
+                elif '/regression/' in referer:
+                    if type_of_target(target_series) in ['binary', 'multiclass']:
+                        return JsonResponse({'error': 'the dataset only used to train the classification only'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': f'Validation error: {str(e)}'}, status=400)
+
         response_data = _prepare_file_response(file_model)
         if response_data:
             return JsonResponse(response_data)
