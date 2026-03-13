@@ -1,0 +1,186 @@
+{% extends "learn/layout.html" %} {% load static %} {% block title %}Lasso
+Regression{% endblock %} {% block body %}
+<div>
+  <h1 class="chapter-title">Lasso Regression</h1>
+  <div class="chapter-content">
+    <p>
+      <span class="dark">Lasso Regression</span> is a type of linear regression
+      that uses <span class="red">L1 regularization</span> to improve model
+      performance and reduce overfitting. It adds a penalty equal to the
+      absolute value of the coefficients to the loss function. This helps in
+      shrinking some coefficients to zero, which makes Lasso useful for
+      <span class="red">feature selection</span>.
+    </p>
+
+    <h2 class="chapter-subheading">Types of Lasso Regression</h2>
+    <ul>
+      <li>
+        <span class="dark">Standard Lasso Regression:</span> Applies L1
+        regularization to reduce the size of coefficients and eliminate less
+        important features.
+      </li>
+      <li>
+        <span class="dark">Elastic Net:</span> A combination of L1 and L2
+        regularization, useful when features are highly correlated.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Assumptions of Lasso Regression</h2>
+    <ul>
+      <li>
+        <span class="dark">Linearity:</span> The relationship between input
+        features and target variable is linear.
+      </li>
+      <li>
+        <span class="dark">Independence:</span> Observations are independent of
+        each other.
+      </li>
+      <li>
+        <span class="dark">Homoscedasticity:</span> The variance of residuals is
+        constant.
+      </li>
+      <li>
+        <span class="dark">Normality:</span> Residuals are normally distributed.
+      </li>
+      <li>
+        <span class="dark">Feature Scaling:</span> Features should be scaled
+        before applying Lasso because regularization is sensitive to feature
+        magnitude.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Mathematical Formulation</h2>
+    <p>Lasso Regression minimizes the following cost function:</p>
+    $$ \text{Cost} = \sum_{i=1}^{m} (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^{n}
+    |\beta_j| $$
+    <p>
+      Here, <span class="dark">\( \lambda \)</span> is the regularization
+      parameter that controls the amount of penalty.
+    </p>
+
+    <h2 class="chapter-subheading">Code</h2>
+    <div class="code-block">
+      <pre><code class="language-python">import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Lasso
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+# Generate synthetic data
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X[:, 0] + np.random.randn(100) * 0.5
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=42)
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train the model
+model = Lasso(alpha=0.1)
+model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_pred = model.predict(X_test_scaled)
+
+# Plot the results
+plt.scatter(X_test, y_test, color='blue', label='Actual')
+plt.scatter(X_test, y_pred, color='red', label='Predicted')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Lasso Regression')
+plt.legend()
+plt.show()</code></pre>
+    </div>
+
+    <div class="img-div">
+      <img
+        src="{% static 'learn/img/lasso_regression.png' %}"
+        alt="Lasso Regression"
+        style="width: 400px"
+      />
+      <span class="caption">Lasso Regression</span>
+    </div>
+
+    <h2 class="chapter-subheading">Applications</h2>
+    <ul>
+      <li>
+        <span class="dark">Feature Selection:</span> Automatically removes less
+        important features by shrinking coefficients to zero.
+      </li>
+      <li>
+        <span class="dark">Finance:</span> Predicting stock prices and economic
+        indicators with many input variables.
+      </li>
+      <li>
+        <span class="dark">Healthcare:</span> Selecting important medical
+        features for disease prediction.
+      </li>
+      <li>
+        <span class="dark">Marketing:</span> Identifying key factors affecting
+        sales and customer behavior.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Advantages and Limitations</h2>
+    <div class="container mt-4 table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Advantages</th>
+            <th>Limitations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Performs feature selection automatically.</td>
+            <td>
+              Can remove useful features if the regularization is too strong.
+            </td>
+          </tr>
+          <tr>
+            <td>Helps reduce overfitting.</td>
+            <td>Requires feature scaling for better performance.</td>
+          </tr>
+          <tr>
+            <td>Works well with high-dimensional datasets.</td>
+            <td>May perform poorly when features are highly correlated.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-links d-flex justify-content-between">
+    <a href="{% url 'chapter' 'regression_metrics' %}" class="content-link">
+      <button class="btn btn-dark">Previous</button>
+    </a>
+    <a href="{% url 'chapter' 'ridge_regression' %}" class="content-link">
+      <button class="btn btn-primary">Next</button>
+    </a>
+  </div>
+
+  <div class="other-links">
+    <div class="hline"></div>
+    <ul>
+      <li>
+        <a href="{% url 'chapter' 'linear_regression' %}">Linear Regression</a>
+      </li>
+      <li>
+        <a href="{% url 'chapter' 'regression_metrics' %}"
+          >Regression Metrics</a
+        >
+      </li>
+      <li><a href="{% url 'chapter' 'random_forest' %}">Random Forest</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  async
+></script>
+{% endblock %}

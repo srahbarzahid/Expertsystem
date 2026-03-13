@@ -19,6 +19,8 @@ TEMPLATES = {
     'linear_regression': 'learn/linear_regression.html',
     'random_forest': 'learn/random_forest.html',
     'regression_metrics': 'learn/regression_metrics.html',
+    'lasso_regression': 'learn/lasso_regression.html',
+    'ridge_regression': 'learn/ridge_regression.html',
     'kmeans': 'learn/kmeans.html',
     'hierarchical_clustering': 'learn/hierarchical_clustering.html',
     'svm': 'learn/svm.html',

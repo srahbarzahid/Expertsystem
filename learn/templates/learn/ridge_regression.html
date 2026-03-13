@@ -1,0 +1,186 @@
+{% extends "learn/layout.html" %} {% load static %} {% block title %}Ridge
+Regression{% endblock %} {% block body %}
+<div>
+  <h1 class="chapter-title">Ridge Regression</h1>
+  <div class="chapter-content">
+    <p>
+      <span class="dark">Ridge Regression</span> is a type of linear regression
+      that uses <span class="red">L2 regularization</span> to reduce overfitting
+      and improve model performance. It adds a penalty equal to the square of
+      the coefficients to the loss function. This helps shrink coefficient
+      values, but unlike Lasso Regression, Ridge does
+      <span class="red">not make coefficients exactly zero</span>.
+    </p>
+
+    <h2 class="chapter-subheading">Types of Ridge Regression</h2>
+    <ul>
+      <li>
+        <span class="dark">Standard Ridge Regression:</span> Applies L2
+        regularization to all coefficients to reduce model complexity.
+      </li>
+      <li>
+        <span class="dark">Kernel Ridge Regression:</span> Combines Ridge
+        Regression with kernel methods to model non-linear relationships.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Assumptions of Ridge Regression</h2>
+    <ul>
+      <li>
+        <span class="dark">Linearity:</span> The relationship between
+        independent variables and dependent variable is linear.
+      </li>
+      <li>
+        <span class="dark">Independence:</span> Observations are independent of
+        each other.
+      </li>
+      <li>
+        <span class="dark">Homoscedasticity:</span> The variance of residuals is
+        constant.
+      </li>
+      <li>
+        <span class="dark">Normality:</span> Residuals are approximately
+        normally distributed.
+      </li>
+      <li>
+        <span class="dark">Feature Scaling:</span> Features should be scaled
+        before applying Ridge Regression because regularization depends on
+        feature magnitude.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Mathematical Formulation</h2>
+    <p>Ridge Regression minimizes the following cost function:</p>
+    $$ \text{Cost} = \sum_{i=1}^{m} (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^{n}
+    \beta_j^2 $$
+    <p>
+      Here, <span class="dark">\( \lambda \)</span> is the regularization
+      parameter that controls the penalty strength.
+    </p>
+
+    <h2 class="chapter-subheading">Code</h2>
+    <div class="code-block">
+      <pre><code class="language-python">import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+# Generate synthetic data
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X[:, 0] + np.random.randn(100) * 0.5
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, train_size=0.7, random_state=42
+)
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train the model
+model = Ridge(alpha=1.0)
+model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_pred = model.predict(X_test_scaled)
+
+# Plot the results
+plt.scatter(X_test, y_test, color='blue', label='Actual')
+plt.scatter(X_test, y_pred, color='red', label='Predicted')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Ridge Regression')
+plt.legend()
+plt.show()</code></pre>
+    </div>
+
+    <div class="img-div">
+      <img
+        src="{% static 'learn/img/ridge_regression.png' %}"
+        alt="Ridge Regression"
+        style="width: 400px"
+      />
+      <span class="caption">Ridge Regression</span>
+    </div>
+
+    <h2 class="chapter-subheading">Applications</h2>
+    <ul>
+      <li>
+        <span class="dark">Finance:</span> Predicting stock prices, credit risk,
+        and economic trends.
+      </li>
+      <li>
+        <span class="dark">Healthcare:</span> Predicting disease progression
+        using multiple medical features.
+      </li>
+      <li>
+        <span class="dark">Marketing:</span> Analyzing factors that influence
+        sales and customer behavior.
+      </li>
+      <li>
+        <span class="dark">Machine Learning:</span> Handling datasets with
+        multicollinearity and improving generalization.
+      </li>
+    </ul>
+
+    <h2 class="chapter-subheading">Advantages and Limitations</h2>
+    <div class="container mt-4 table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Advantages</th>
+            <th>Limitations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Reduces overfitting by shrinking coefficient values.</td>
+            <td>Does not perform automatic feature selection like Lasso.</td>
+          </tr>
+          <tr>
+            <td>Works well when features are highly correlated.</td>
+            <td>Requires feature scaling before training.</td>
+          </tr>
+          <tr>
+            <td>Improves model stability and generalization.</td>
+            <td>Still assumes a linear relationship between variables.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-links d-flex justify-content-between">
+    <a href="{% url 'chapter' 'lasso_regression' %}" class="content-link">
+      <button class="btn btn-dark">Previous</button>
+    </a>
+    <a href="{% url 'chapter' 'kmeans' %}" class="content-link">
+      <button class="btn btn-primary">Next</button>
+    </a>
+  </div>
+
+  <div class="other-links">
+    <div class="hline"></div>
+    <ul>
+      <li>
+        <a href="{% url 'chapter' 'linear_regression' %}">Linear Regression</a>
+      </li>
+      <li>
+        <a href="{% url 'chapter' 'lasso_regression' %}">Lasso Regression</a>
+      </li>
+      <li>
+        <a href="{% url 'chapter' 'kmeans' %}">K-Means Clustering</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  async
+></script>
+{% endblock %}
